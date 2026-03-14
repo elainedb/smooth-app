@@ -75,6 +75,7 @@ class _PriceCategoryInputPageState extends State<PriceCategoryInputPage> {
                 _MyAutocomplete(
                   helper: SimpleInputPageCategoryHelper(),
                   controller: _categoryController,
+                  autofocus: true,
                   onSelected: (final String selected) =>
                       setState(() => _categoryName = selected),
                 )
@@ -86,6 +87,7 @@ class _PriceCategoryInputPageState extends State<PriceCategoryInputPage> {
               _MyAutocomplete(
                 helper: SimpleInputPageOriginHelper(),
                 controller: _originController,
+                autofocus: false,
                 onSelected: (final String selected) => setState(() {
                   _originController.text = '';
                   _originNames.add(selected);
@@ -176,11 +178,13 @@ class _MyAutocomplete extends StatefulWidget {
     required this.helper,
     required this.controller,
     required this.onSelected,
+    this.autofocus = false,
   });
 
   final AbstractSimpleInputPageHelper helper;
   final TextEditingController controller;
   final Function(String) onSelected;
+  final bool autofocus;
 
   @override
   State<_MyAutocomplete> createState() => _MyAutocompleteState();
@@ -199,6 +203,7 @@ class _MyAutocompleteState extends State<_MyAutocomplete> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (_, BoxConstraints constraints) => SmoothAutocompleteTextField(
+      autofocus: widget.autofocus,
       autocompleteKey: _autocompleteKey,
       focusNode: _focusNode,
       constraints: constraints,

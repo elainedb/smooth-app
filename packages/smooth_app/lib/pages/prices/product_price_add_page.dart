@@ -7,10 +7,10 @@ import 'package:smooth_app/generic_lib/widgets/smooth_back_button.dart';
 import 'package:smooth_app/helpers/provider_helper.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/locations/osm_location.dart';
+import 'package:smooth_app/pages/prices/add_product/price_add_product_button.dart';
+import 'package:smooth_app/pages/prices/add_product/price_add_product_card.dart';
 import 'package:smooth_app/pages/prices/price_add_helper.dart';
-import 'package:smooth_app/pages/prices/price_add_product_card.dart';
 import 'package:smooth_app/pages/prices/price_amount_card.dart';
-import 'package:smooth_app/pages/prices/price_currency_card.dart';
 import 'package:smooth_app/pages/prices/price_date_card.dart';
 import 'package:smooth_app/pages/prices/price_existing_amount_card.dart';
 import 'package:smooth_app/pages/prices/price_location_card.dart';
@@ -124,48 +124,84 @@ class _ProductPriceAddPageState extends State<ProductPriceAddPage>
                           .extension<SmoothColorsThemeExtension>()
                           .primaryLight
                     : null,
-                body: SingleChildScrollView(
+                body: CustomScrollView(
                   controller: _scrollController,
-                  padding: const EdgeInsetsDirectional.all(LARGE_SPACE),
-                  child: Column(
-                    children: <Widget>[
-                      const PriceProofCard(),
-                      const SizedBox(height: LARGE_SPACE),
-                      const PriceDateCard(),
-                      const SizedBox(height: LARGE_SPACE),
-                      PriceLocationCard(
-                        onLocationChanged: (OsmLocation location) =>
-                            PriceAddHelper(
-                              context,
-                            ).updateCurrency(location, model),
+                  slivers: <Widget>[
+                    const SliverPadding(
+                      padding: EdgeInsets.fromLTRB(LARGE_SPACE, LARGE_SPACE, LARGE_SPACE, 0.0),
+                      sliver: SliverToBoxAdapter(
+                        child: PriceProofCard(),
                       ),
-                      const SizedBox(height: LARGE_SPACE),
-                      const PriceCurrencyCard(),
-                      const SizedBox(height: LARGE_SPACE),
-                      if (model.existingPrices != null)
-                        for (final Price price in model.existingPrices!)
-                          PriceExistingAmountCard(price),
-                      for (int i = 0; i < model.length; i++)
-                        PriceAmountCard(key: UniqueKey(), index: i),
-                      const SizedBox(height: LARGE_SPACE),
-                      if (model.multipleProducts) const PriceAddProductCard(),
-                      // so that the last items don't get hidden by the FAB
-                      const SizedBox(height: MINIMUM_TOUCH_SIZE * 2),
-                    ],
-                  ),
-                ),
-                floatingActionButton: SmoothExpandableFloatingActionButton(
-                  scrollController: _scrollController,
-                  onPressed: () async =>
-                      _exitPage(await _mayExitPage(saving: true, model: model)),
-                  icon: const Icon(Icons.send),
-                  label: Text(
-                    appLocalizations.prices_send_n_prices(model.length),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15.0,
                     ),
-                  ),
+                    const SliverPadding(
+                      padding: EdgeInsets.fromLTRB(LARGE_SPACE, LARGE_SPACE, LARGE_SPACE, 0.0),
+                      sliver: SliverToBoxAdapter(
+                        child: PriceDateCard(),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(LARGE_SPACE, LARGE_SPACE, LARGE_SPACE, 0.0),
+                      sliver: SliverToBoxAdapter(
+                        child: PriceLocationCard(
+                          onLocationChanged: (OsmLocation location) =>
+                              PriceAddHelper(
+                                context,
+                              ).updateCurrency(location, model),
+                        ),
+                      ),
+                    ),
+                    if (model.existingPrices != null)
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(LARGE_SPACE, LARGE_SPACE, LARGE_SPACE, 0.0),
+                        sliver: SliverToBoxAdapter(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (final Price price in model.existingPrices!)
+                                PriceExistingAmountCard(price),
+                            ],
+                          ),
+                        ),
+                      ),
+                    const SliverPadding(
+                      padding: EdgeInsets.fromLTRB(LARGE_SPACE, LARGE_SPACE, LARGE_SPACE, 0.0),
+                      sliver: PriceAmountCard(),
+                    ),
+                    if (model.multipleProducts)
+                      const SliverPadding(
+                        padding: EdgeInsets.fromLTRB(LARGE_SPACE, LARGE_SPACE, LARGE_SPACE, 0.0),
+                        sliver: SliverToBoxAdapter(
+                          child: PriceAddProductCard(),
+                        ),
+                      ),
+                    const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 120.0),
+                    ),
+                  ],
+                ),
+                floatingActionButton: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (model.multipleProducts && model.length > 0)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 16.0),
+                        child: PriceAddProductButton(),
+                      ),
+                    SmoothExpandableFloatingActionButton(
+                      scrollController: _scrollController,
+                      onPressed: () async =>
+                          _exitPage(await _mayExitPage(saving: true, model: model)),
+                      icon: const Icon(Icons.send),
+                      label: Text(
+                        appLocalizations.prices_send_n_prices(model.length),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -179,17 +215,12 @@ class _ProductPriceAddPageState extends State<ProductPriceAddPage>
   String get actionName =>
       'Opened price_page with ${widget.model.proofType.offTag}';
 
-  /// Exits the page if the [flag] is `true`.
   void _exitPage(final bool flag) {
     if (flag) {
       Navigator.of(context).pop();
     }
   }
 
-  /// Returns `true` if we should really exit the page.
-  ///
-  /// Parameter [saving] tells about the context: are we leaving the page,
-  /// or have we clicked on the "save" button?
   Future<bool> _mayExitPage({
     required final bool saving,
     required PriceModel model,

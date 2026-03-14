@@ -5753,5 +5753,10 @@
         "type": "String"
       }
     }
-  }
+  },
+  "prices_category_title": "Category",
+  "prices_origins_title": "Origins",
+  "prices_amount_update_currency": "Update currency",
+  "prices_location_open_map": "View the shop on the map",
+  "prices_location_edit": "Select another shop"
 }

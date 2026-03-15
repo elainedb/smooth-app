@@ -30,34 +30,44 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     required this.pricesAreDiscounted,
     required this.prices,
     required this.pricesWithoutDiscount,
+    required this.discountTypes,
   });
 
   BackgroundTaskPrice.fromJson(super.json)
-    : date = JsonHelper.stringTimestampToDate(json[_jsonTagDate] as String),
-      currency = Currency.fromName(json[_jsonTagCurrency] as String)!,
-      locationOSMId = json[_jsonTagOSMId] as int,
-      locationOSMType = LocationOSMType.fromOffTag(
-        json[_jsonTagOSMType] as String,
-      )!,
-      barcodes = json.containsKey(_jsonTagBarcode)
-          ? <String>[json[_jsonTagBarcode] as String]
-          : _fromJsonListString(json[_jsonTagBarcodes])!,
-      categories = _fromJsonListString(json[_jsonTagCategories]) ?? <String>[],
-      origins =
-          _fromJsonListListString(json[_jsonTagOrigins]) ?? <List<String>>[],
-      labels =
-          _fromJsonListListString(json[_jsonTagLabels]) ?? <List<String>>[],
-      pricePers = _fromJsonListString(json[_jsonTagPricePers]) ?? <String>[],
-      pricesAreDiscounted = json.containsKey(_jsonTagIsDiscounted)
-          ? <bool>[json[_jsonTagIsDiscounted] as bool]
-          : _fromJsonListBool(json[_jsonTagAreDiscounted])!,
-      prices = json.containsKey(_jsonTagPrice)
-          ? <double>[json[_jsonTagPrice] as double]
-          : fromJsonListDouble(json[_jsonTagPrices])!,
-      pricesWithoutDiscount = json.containsKey(_jsonTagPriceWithoutDiscount)
-          ? <double?>[json[_jsonTagPriceWithoutDiscount] as double?]
-          : _fromJsonListNullableDouble(json[_jsonTagPricesWithoutDiscount])!,
-      super.fromJson();
+      : date = JsonHelper.stringTimestampToDate(json[_jsonTagDate] as String),
+        currency = Currency.fromName(json[_jsonTagCurrency] as String)!,
+        locationOSMId = json[_jsonTagOSMId] as int,
+        locationOSMType = LocationOSMType.fromOffTag(
+          json[_jsonTagOSMType] as String,
+        )!,
+        barcodes = json.containsKey(_jsonTagBarcode)
+            ? <String>[json[_jsonTagBarcode] as String]
+            : _fromJsonListString(json[_jsonTagBarcodes])!,
+        categories =
+            _fromJsonListString(json[_jsonTagCategories]) ?? <String>[],
+        origins =
+            _fromJsonListListString(json[_jsonTagOrigins]) ?? <List<String>>[],
+        labels =
+            _fromJsonListListString(json[_jsonTagLabels]) ?? <List<String>>[],
+        pricePers = _fromJsonListString(json[_jsonTagPricePers]) ?? <String>[],
+        pricesAreDiscounted = json.containsKey(_jsonTagIsDiscounted)
+            ? <bool>[json[_jsonTagIsDiscounted] as bool]
+            : _fromJsonListBool(json[_jsonTagAreDiscounted])!,
+        prices = json.containsKey(_jsonTagPrice)
+            ? <double>[json[_jsonTagPrice] as double]
+            : fromJsonListDouble(json[_jsonTagPrices])!,
+        pricesWithoutDiscount = json.containsKey(_jsonTagPriceWithoutDiscount)
+            ? <double?>[json[_jsonTagPriceWithoutDiscount] as double?]
+            : _fromJsonListNullableDouble(
+                json[_jsonTagPricesWithoutDiscount],
+              )!,
+        discountTypes = _normalizeDiscountTypes(
+          _fromJsonListString(json[_jsonTagDiscountTypes]),
+          json.containsKey(_jsonTagBarcode)
+              ? 1
+              : (json[_jsonTagBarcodes] as List<dynamic>).length,
+        ),
+        super.fromJson();
 
   static const String _jsonTagDate = 'date';
   static const String _jsonTagCurrency = 'currency';
@@ -71,6 +81,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   static const String _jsonTagAreDiscounted = 'areDiscounted';
   static const String _jsonTagPrices = 'prices';
   static const String _jsonTagPricesWithoutDiscount = 'pricesWithoutDiscount';
+  static const String _jsonTagDiscountTypes = 'discountTypes';
   @Deprecated('Use [_jsonTagBarcodes] instead')
   static const String _jsonTagBarcode = 'barcode';
   @Deprecated('Use [_jsonTagAreDiscounted] instead')
@@ -79,6 +90,23 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   static const String _jsonTagPrice = 'price';
   @Deprecated('Use [_jsonTagPricesWithoutDiscount] instead')
   static const String _jsonTagPriceWithoutDiscount = 'priceWithoutDiscount';
+
+  /// Normalizes discount types from JSON.
+  ///
+  /// Needed for backward compatibility, where older versions did not have
+  /// this field.
+  static List<String> _normalizeDiscountTypes(
+    final List<String?>? input,
+    final int expectedLength,
+  ) {
+    final List<String> result = List<String>.filled(expectedLength, '');
+    if (input != null) {
+      for (int i = 0; i < input.length && i < expectedLength; i++) {
+        result[i] = input[i] ?? '';
+      }
+    }
+    return result;
+  }
 
   static List<double>? fromJsonListDouble(final List<dynamic>? input) {
     if (input == null) {
@@ -157,6 +185,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   final List<bool> pricesAreDiscounted;
   final List<double> prices;
   final List<double?> pricesWithoutDiscount;
+  final List<String> discountTypes;
 
   @override
   Map<String, dynamic> toJson() {
@@ -173,20 +202,23 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     result[_jsonTagAreDiscounted] = pricesAreDiscounted;
     result[_jsonTagPrices] = prices;
     result[_jsonTagPricesWithoutDiscount] = pricesWithoutDiscount;
+    result[_jsonTagDiscountTypes] = discountTypes;
     return result;
   }
 
   @override
   (String, AlignmentGeometry)? getFloatingMessage(
     final AppLocalizations appLocalizations,
-  ) => (appLocalizations.add_price_queued, AlignmentDirectional.bottomCenter);
+  ) =>
+      (appLocalizations.add_price_queued, AlignmentDirectional.bottomCenter);
 
   @protected
   static String getStamp({
     required final DateTime date,
     required final int locationOSMId,
     required final LocationOSMType locationOSMType,
-  }) => 'no_barcode;price;$date;$locationOSMId;$locationOSMType';
+  }) =>
+      'no_barcode;price;$date;$locationOSMId;$locationOSMType';
 
   @override
   Future<void> preExecute(final LocalDatabase localDatabase) async {}
@@ -239,6 +271,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
           pricesAreDiscounted: <bool>[pricesAreDiscounted[i]],
           prices: <double>[prices[i]],
           pricesWithoutDiscount: <double?>[pricesWithoutDiscount[i]],
+          discountTypes: <String>[discountTypes[i]],
         );
       }
       return;
@@ -261,6 +294,9 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
           }
         }
       }
+      final DiscountType? discountType = priceIsDiscounted
+          ? DiscountType.fromOffTag(discountTypes[i])
+          : null;
       final Price newPrice = Price()
         ..date = date
         ..currency = currency
@@ -277,15 +313,16 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
         ..price = _fixPriceDecimals(price)
         ..priceWithoutDiscount = priceWithoutDiscount == null
             ? null
-            : _fixPriceDecimals(priceWithoutDiscount);
+            : _fixPriceDecimals(priceWithoutDiscount)
+        ..discountType = discountType;
 
       // create price
       final MaybeError<Price?> addedPrice =
           await OpenPricesAPIClient.createPrice(
-            price: newPrice,
-            bearerToken: bearerToken,
-            uriHelper: ProductQuery.uriPricesHelper,
-          );
+        price: newPrice,
+        bearerToken: bearerToken,
+        uriHelper: ProductQuery.uriPricesHelper,
+      );
       if (addedPrice.isError) {
         throw Exception('Could not add price: ${addedPrice.error}');
       }

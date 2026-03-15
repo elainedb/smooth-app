@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/get_prices_model.dart';
 import 'package:smooth_app/pages/prices/price_data_entry.dart';
 import 'package:smooth_app/pages/prices/price_data_value.dart';
@@ -95,6 +96,17 @@ class PriceDataWidget extends StatelessWidget {
                   PriceDataDiscountedValue(price: price),
                 ],
               ),
+              if (price.discountType != null)
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PriceDataEntry(
+                        icon: const Icon(Icons.discount_rounded, size: 19.0),
+                        label: price.discountType!.getTitle(appLocalizations),
+                      ),
+                    ),
+                  ],
+                ),
               Row(
                 children: <Widget>[
                   Expanded(

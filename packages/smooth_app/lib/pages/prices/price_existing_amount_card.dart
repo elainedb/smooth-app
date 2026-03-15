@@ -7,6 +7,7 @@ import 'package:smooth_app/pages/prices/price_existing_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_l10n_helper.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
 import 'package:smooth_app/pages/prices/price_product_list_tile.dart';
+import 'package:smooth_app/pages/prices/price_existing_discount_type_field.dart';
 
 /// Card that displays an existing amount.
 class PriceExistingAmountCard extends StatefulWidget {
@@ -63,6 +64,10 @@ class _PriceExistingAmountCardState extends State<PriceExistingAmountCard> {
             ListTile(
               title: category == null ? null : Text(category),
               subtitle: subtitle.isEmpty ? null : Text(subtitle.join(', ')),
+            ),
+          if (isDiscounted)
+            PriceExistingDiscountTypeField(
+              value: widget.price.discountType,
             ),
           SwitchListTile(
             value: isDiscounted,

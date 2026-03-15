@@ -30,6 +30,15 @@ class PriceAmountModel {
     _priceWithoutDiscount = value;
   }
 
+  String _discountType = '';
+
+  String get discountType => _discountType;
+
+  set discountType(final String value) {
+    _hasChanged = true;
+    _discountType = value;
+  }
+
   late double _checkedPaidPrice;
   double? _checkedPriceWithoutDiscount;
 

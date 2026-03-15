@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_app/l10n/app_localizations.dart';
+
+extension DiscountTypeExtension on DiscountType {
+  String getTitle(AppLocalizations appLocalizations) {
+    switch (this) {
+      case DiscountType.quantity:
+        return appLocalizations.prices_discount_type_quantity;
+      case DiscountType.sale:
+        return appLocalizations.prices_discount_type_sale;
+      case DiscountType.seasonal:
+        return appLocalizations.prices_discount_type_seasonal;
+      case DiscountType.loyaltyProgram:
+        return appLocalizations.prices_discount_type_loyalty_program;
+      case DiscountType.expiresSoon:
+        return appLocalizations.prices_discount_type_expires_soon;
+      case DiscountType.pickItYourself:
+        return appLocalizations.prices_discount_type_pick_it_yourself;
+      case DiscountType.secondHand:
+        return appLocalizations.prices_discount_type_second_hand;
+      case DiscountType.other:
+        return appLocalizations.prices_discount_type_other;
+    }
+  }
+}
+
+extension BuildContextDiscountTypeExtension on BuildContext {
+  String getDiscountTypeTitle(DiscountType discountType) =>
+      discountType.getTitle(AppLocalizations.of(this));
+}

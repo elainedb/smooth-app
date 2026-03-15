@@ -30,11 +30,12 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
     required super.pricesAreDiscounted,
     required super.prices,
     required super.pricesWithoutDiscount,
+    required super.discountTypes,
   });
 
   BackgroundTaskAddOtherPrice.fromJson(super.json)
-    : proofId = json[_jsonTagProofId] as int,
-      super.fromJson();
+      : proofId = json[_jsonTagProofId] as int,
+        super.fromJson();
 
   static const String _jsonTagProofId = 'proofId';
 
@@ -65,6 +66,7 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
     required final List<bool> pricesAreDiscounted,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
+    required final List<String> discountTypes,
     LocalDatabase? localDatabase,
   }) async {
     assert(context != null || localDatabase != null);
@@ -93,6 +95,7 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
     );
     if (context != null && context.mounted) {
       return task.addToManager(
@@ -126,28 +129,31 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
     required final List<bool> pricesAreDiscounted,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
-  }) => BackgroundTaskAddOtherPrice._(
-    uniqueId: uniqueId,
-    processName: _operationType.processName,
-    proofId: proofId,
-    date: date,
-    currency: currency,
-    locationOSMId: locationOSMId,
-    locationOSMType: locationOSMType,
-    barcodes: barcodes,
-    categories: categories,
-    origins: origins,
-    labels: labels,
-    pricePers: pricePers,
-    pricesAreDiscounted: pricesAreDiscounted,
-    prices: prices,
-    pricesWithoutDiscount: pricesWithoutDiscount,
-    stamp: BackgroundTaskPrice.getStamp(
-      date: date,
-      locationOSMId: locationOSMId,
-      locationOSMType: locationOSMType,
-    ),
-  );
+    required final List<String> discountTypes,
+  }) =>
+      BackgroundTaskAddOtherPrice._(
+        uniqueId: uniqueId,
+        processName: _operationType.processName,
+        proofId: proofId,
+        date: date,
+        currency: currency,
+        locationOSMId: locationOSMId,
+        locationOSMType: locationOSMType,
+        barcodes: barcodes,
+        categories: categories,
+        origins: origins,
+        labels: labels,
+        pricePers: pricePers,
+        pricesAreDiscounted: pricesAreDiscounted,
+        prices: prices,
+        pricesWithoutDiscount: pricesWithoutDiscount,
+        discountTypes: discountTypes,
+        stamp: BackgroundTaskPrice.getStamp(
+          date: date,
+          locationOSMId: locationOSMId,
+          locationOSMType: locationOSMType,
+        ),
+      );
 
   @override
   Future<void> execute(final LocalDatabase localDatabase) async {

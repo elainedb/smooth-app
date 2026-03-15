@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
+import 'package:smooth_app/generic_lib/widgets/smooth_text_form_field.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_existing_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_l10n_helper.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
@@ -70,6 +72,19 @@ class _PriceExistingAmountCardState extends State<PriceExistingAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (isDiscounted && widget.price.discountType != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: SMALL_SPACE),
+              child: SmoothTextFormField(
+                type: TextFieldTypes.PLAIN_TEXT,
+                enabled: false,
+                hintText: '',
+                prefixIcon: const Icon(Icons.discount),
+                controller: TextEditingController(
+                  text: widget.price.discountType!.getTitle(appLocalizations),
+                ),
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

@@ -47,6 +47,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required super.labels,
     required super.pricePers,
     required super.pricesAreDiscounted,
+    required super.discountTags,
     required super.prices,
     required super.pricesWithoutDiscount,
   });
@@ -123,6 +124,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTags,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
@@ -144,6 +146,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTags: discountTags,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
       displaySnackbar: displaySnackbar,
@@ -174,6 +177,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTags,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
@@ -199,6 +203,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     labels: labels,
     pricePers: pricePers,
     pricesAreDiscounted: pricesAreDiscounted,
+    discountTags: discountTags,
     prices: prices,
     pricesWithoutDiscount: pricesWithoutDiscount,
     stamp: BackgroundTaskPrice.getStamp(
@@ -292,6 +297,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTags: discountTags,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
     );

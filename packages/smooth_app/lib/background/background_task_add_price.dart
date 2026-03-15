@@ -49,23 +49,24 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required super.pricesAreDiscounted,
     required super.prices,
     required super.pricesWithoutDiscount,
+    required super.discountTypes,
   });
 
   BackgroundTaskAddPrice.fromJson(super.json)
-    : fullPath = json[_jsonTagImagePath] as String,
-      rotationDegrees = json[_jsonTagRotation] as int? ?? 0,
-      cropX1 = json[_jsonTagX1] as int? ?? 0,
-      cropY1 = json[_jsonTagY1] as int? ?? 0,
-      cropX2 = json[_jsonTagX2] as int? ?? 0,
-      cropY2 = json[_jsonTagY2] as int? ?? 0,
-      proofType = ProofType.fromOffTag(json[_jsonTagProofType] as String)!,
-      eraserCoordinates = BackgroundTaskPrice.fromJsonListDouble(
-        json[_jsonTagEraserCoordinates],
-      ),
-      displaySnackbar = json[_jsonTagDisplaySnackbar] as bool? ?? true,
-      readyForPriceTagValidation =
-          json[_jsonTagReadyForPriceTagValidation] as bool? ?? false,
-      super.fromJson();
+      : fullPath = json[_jsonTagImagePath] as String,
+        rotationDegrees = json[_jsonTagRotation] as int? ?? 0,
+        cropX1 = json[_jsonTagX1] as int? ?? 0,
+        cropY1 = json[_jsonTagY1] as int? ?? 0,
+        cropX2 = json[_jsonTagX2] as int? ?? 0,
+        cropY2 = json[_jsonTagY2] as int? ?? 0,
+        proofType = ProofType.fromOffTag(json[_jsonTagProofType] as String)!,
+        eraserCoordinates = BackgroundTaskPrice.fromJsonListDouble(
+          json[_jsonTagEraserCoordinates],
+        ),
+        displaySnackbar = json[_jsonTagDisplaySnackbar] as bool? ?? true,
+        readyForPriceTagValidation =
+            json[_jsonTagReadyForPriceTagValidation] as bool? ?? false,
+        super.fromJson();
 
   static const String _jsonTagImagePath = 'imagePath';
   static const String _jsonTagRotation = 'rotation';
@@ -125,6 +126,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<bool> pricesAreDiscounted,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
+    required final List<String> discountTypes,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
   }) async {
@@ -146,6 +148,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
       displaySnackbar: displaySnackbar,
       readyForPriceTagValidation: readyForPriceTagValidation,
     );
@@ -176,39 +179,42 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<bool> pricesAreDiscounted,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
+    required final List<String> discountTypes,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
-  }) => BackgroundTaskAddPrice._(
-    uniqueId: uniqueId,
-    processName: _operationType.processName,
-    fullPath: cropObject.fullFile!.path,
-    rotationDegrees: cropObject.rotation,
-    cropX1: cropObject.x1,
-    cropY1: cropObject.y1,
-    cropX2: cropObject.x2,
-    cropY2: cropObject.y2,
-    proofType: proofType,
-    date: date,
-    currency: currency,
-    locationOSMId: locationOSMId,
-    locationOSMType: locationOSMType,
-    eraserCoordinates: cropObject.eraserCoordinates,
-    barcodes: barcodes,
-    categories: categories,
-    origins: origins,
-    labels: labels,
-    pricePers: pricePers,
-    pricesAreDiscounted: pricesAreDiscounted,
-    prices: prices,
-    pricesWithoutDiscount: pricesWithoutDiscount,
-    stamp: BackgroundTaskPrice.getStamp(
-      date: date,
-      locationOSMId: locationOSMId,
-      locationOSMType: locationOSMType,
-    ),
-    displaySnackbar: displaySnackbar,
-    readyForPriceTagValidation: readyForPriceTagValidation,
-  );
+  }) =>
+      BackgroundTaskAddPrice._(
+        uniqueId: uniqueId,
+        processName: _operationType.processName,
+        fullPath: cropObject.fullFile!.path,
+        rotationDegrees: cropObject.rotation,
+        cropX1: cropObject.x1,
+        cropY1: cropObject.y1,
+        cropX2: cropObject.x2,
+        cropY2: cropObject.y2,
+        proofType: proofType,
+        date: date,
+        currency: currency,
+        locationOSMId: locationOSMId,
+        locationOSMType: locationOSMType,
+        eraserCoordinates: cropObject.eraserCoordinates,
+        barcodes: barcodes,
+        categories: categories,
+        origins: origins,
+        labels: labels,
+        pricePers: pricePers,
+        pricesAreDiscounted: pricesAreDiscounted,
+        prices: prices,
+        pricesWithoutDiscount: pricesWithoutDiscount,
+        discountTypes: discountTypes,
+        stamp: BackgroundTaskPrice.getStamp(
+          date: date,
+          locationOSMId: locationOSMId,
+          locationOSMType: locationOSMType,
+        ),
+        displaySnackbar: displaySnackbar,
+        readyForPriceTagValidation: readyForPriceTagValidation,
+      );
 
   @override
   (String, AlignmentGeometry)? getFloatingMessage(
@@ -294,6 +300,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
     );
   }
 }

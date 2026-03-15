@@ -6,6 +6,7 @@ import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/prices/price_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_amount_model.dart';
+import 'package:smooth_app/pages/prices/price_discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
 import 'package:smooth_app/pages/prices/price_per_extension.dart';
 import 'package:smooth_app/pages/prices/price_product_list_tile.dart';
@@ -100,6 +101,35 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(bottom: SMALL_SPACE),
+              child: SmoothDropdownButton<String>(
+                isExpanded: true,
+                value: model.discountType,
+                items: <String>[
+                  '',
+                  ...DiscountType.values
+                      .map((final DiscountType type) => type.offTag),
+                ]
+                    .map(
+                      (final String offTag) => SmoothDropdownItem<String>(
+                        value: offTag,
+                        label: offTag == ''
+                            ? ''
+                            : DiscountType.fromOffTag(offTag)!
+                                .getTitle(appLocalizations),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (final String? value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setState(() => model.discountType = value);
+                },
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

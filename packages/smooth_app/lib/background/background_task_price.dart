@@ -30,6 +30,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     required this.pricesAreDiscounted,
     required this.prices,
     required this.pricesWithoutDiscount,
+    required this.discountTypes,
   });
 
   BackgroundTaskPrice.fromJson(super.json)
@@ -57,6 +58,12 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
       pricesWithoutDiscount = json.containsKey(_jsonTagPriceWithoutDiscount)
           ? <double?>[json[_jsonTagPriceWithoutDiscount] as double?]
           : _fromJsonListNullableDouble(json[_jsonTagPricesWithoutDiscount])!,
+      discountTypes = _normalizeListString(
+        _fromJsonListString(json[_jsonTagDiscountTypes]),
+        (json.containsKey(_jsonTagBarcode)
+            ? <String>[json[_jsonTagBarcode] as String]
+            : _fromJsonListString(json[_jsonTagBarcodes])!).length,
+      ),
       super.fromJson();
 
   static const String _jsonTagDate = 'date';
@@ -71,6 +78,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   static const String _jsonTagAreDiscounted = 'areDiscounted';
   static const String _jsonTagPrices = 'prices';
   static const String _jsonTagPricesWithoutDiscount = 'pricesWithoutDiscount';
+  static const String _jsonTagDiscountTypes = 'discountTypes';
   @Deprecated('Use [_jsonTagBarcodes] instead')
   static const String _jsonTagBarcode = 'barcode';
   @Deprecated('Use [_jsonTagAreDiscounted] instead')
@@ -111,6 +119,20 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     final List<String> result = <String>[];
     for (final dynamic item in input) {
       result.add(item as String);
+    }
+    return result;
+  }
+
+  static List<String> _normalizeListString(
+    final List<String>? input,
+    final int length,
+  ) {
+    final List<String> result = <String>[];
+    if (input != null) {
+      result.addAll(input);
+    }
+    while (result.length < length) {
+      result.add('');
     }
     return result;
   }
@@ -157,6 +179,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   final List<bool> pricesAreDiscounted;
   final List<double> prices;
   final List<double?> pricesWithoutDiscount;
+  final List<String> discountTypes;
 
   @override
   Map<String, dynamic> toJson() {
@@ -173,6 +196,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     result[_jsonTagAreDiscounted] = pricesAreDiscounted;
     result[_jsonTagPrices] = prices;
     result[_jsonTagPricesWithoutDiscount] = pricesWithoutDiscount;
+    result[_jsonTagDiscountTypes] = discountTypes;
     return result;
   }
 
@@ -239,6 +263,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
           pricesAreDiscounted: <bool>[pricesAreDiscounted[i]],
           prices: <double>[prices[i]],
           pricesWithoutDiscount: <double?>[pricesWithoutDiscount[i]],
+          discountTypes: <String>[discountTypes[i]],
         );
       }
       return;
@@ -277,7 +302,10 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
         ..price = _fixPriceDecimals(price)
         ..priceWithoutDiscount = priceWithoutDiscount == null
             ? null
-            : _fixPriceDecimals(priceWithoutDiscount);
+            : _fixPriceDecimals(priceWithoutDiscount)
+        ..discountType = priceIsDiscounted
+            ? DiscountType.fromOffTag(discountTypes[i])
+            : null;
 
       // create price
       final MaybeError<Price?> addedPrice =

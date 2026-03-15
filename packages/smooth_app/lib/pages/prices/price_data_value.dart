@@ -4,6 +4,7 @@ import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/helpers/strike_through_text_helper.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_per_extension.dart';
 import 'package:smooth_app/query/product_query.dart';
 import 'package:smooth_app/resources/app_icons.dart' as icons;
@@ -93,15 +94,31 @@ class PriceDataDiscountedValue extends StatelessWidget {
       return EMPTY_WIDGET;
     }
 
-    return _PriceDataContainer(
-      value: NumberFormat('#0%').format(
-        (price.price - price.priceWithoutDiscount!) /
-            price.priceWithoutDiscount!,
-      ),
-      backgroundColor: context
-          .extension<SmoothColorsThemeExtension>()
-          .secondaryVibrant,
-      textColor: Colors.white,
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: VERY_SMALL_SPACE,
+      children: <Widget>[
+        if (price.discountType != null)
+          _PriceDataContainer(
+            value: price.discountType!.getTitle(appLocalizations),
+            backgroundColor: context
+                .extension<SmoothColorsThemeExtension>()
+                .secondaryVibrant,
+            textColor: Colors.white,
+          ),
+        _PriceDataContainer(
+          value: NumberFormat('#0%').format(
+            (price.price - price.priceWithoutDiscount!) /
+                price.priceWithoutDiscount!,
+          ),
+          backgroundColor: context
+              .extension<SmoothColorsThemeExtension>()
+              .secondaryVibrant,
+          textColor: Colors.white,
+        ),
+      ],
     );
   }
 }

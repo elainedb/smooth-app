@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
 
@@ -28,6 +29,15 @@ class PriceAmountModel {
   set priceWithoutDiscount(final String value) {
     _hasChanged = true;
     _priceWithoutDiscount = value;
+  }
+
+  DiscountType? _discountType;
+
+  DiscountType? get discountType => _discountType;
+
+  set discountType(final DiscountType? value) {
+    _hasChanged = true;
+    _discountType = value;
   }
 
   late double _checkedPaidPrice;

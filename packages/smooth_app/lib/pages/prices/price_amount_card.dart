@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_amount_model.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
@@ -95,11 +96,43 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             ),
           SwitchListTile(
             value: model.promo,
-            onChanged: (final bool value) =>
-                setState(() => model.promo = !model.promo),
+            onChanged: (final bool value) => setState(() {
+              model.promo = !model.promo;
+              if (!model.promo) {
+                model.discountType = null;
+              }
+            }),
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(bottom: SMALL_SPACE),
+              child: SmoothDropdownButton<String>(
+                isExpanded: true,
+                value: model.discountType?.offTag ?? '',
+                hint: Text(appLocalizations.prices_amount_discount_type),
+                items: <SmoothDropdownItem<String>>[
+                  const SmoothDropdownItem<String>(
+                    value: '',
+                    label: '',
+                  ),
+                  ...DiscountType.values.map(
+                    (final DiscountType discountType) =>
+                        SmoothDropdownItem<String>(
+                      value: discountType.offTag,
+                      label: discountType.getTitle(appLocalizations),
+                    ),
+                  ),
+                ],
+                onChanged: (final String? value) {
+                  model.discountType = (value == null || value.isEmpty)
+                      ? null
+                      : DiscountType.fromOffTag(value);
+                  setState(() {});
+                },
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

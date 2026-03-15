@@ -28,6 +28,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     required this.labels,
     required this.pricePers,
     required this.pricesAreDiscounted,
+    required this.discountTypes,
     required this.prices,
     required this.pricesWithoutDiscount,
   });
@@ -51,6 +52,12 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
       pricesAreDiscounted = json.containsKey(_jsonTagIsDiscounted)
           ? <bool>[json[_jsonTagIsDiscounted] as bool]
           : _fromJsonListBool(json[_jsonTagAreDiscounted])!,
+      discountTypes = _normalizeDiscountTypes(
+        json[_jsonTagDiscountTypes] as List<dynamic>?,
+        json.containsKey(_jsonTagBarcode)
+            ? 1
+            : _fromJsonListString(json[_jsonTagBarcodes])!.length,
+      ),
       prices = json.containsKey(_jsonTagPrice)
           ? <double>[json[_jsonTagPrice] as double]
           : fromJsonListDouble(json[_jsonTagPrices])!,
@@ -69,6 +76,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   static const String _jsonTagLabels = 'labels';
   static const String _jsonTagPricePers = 'pricePers';
   static const String _jsonTagAreDiscounted = 'areDiscounted';
+  static const String _jsonTagDiscountTypes = 'discountTypes';
   static const String _jsonTagPrices = 'prices';
   static const String _jsonTagPricesWithoutDiscount = 'pricesWithoutDiscount';
   @Deprecated('Use [_jsonTagBarcodes] instead')
@@ -79,6 +87,19 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   static const String _jsonTagPrice = 'price';
   @Deprecated('Use [_jsonTagPricesWithoutDiscount] instead')
   static const String _jsonTagPriceWithoutDiscount = 'priceWithoutDiscount';
+
+  static List<String> _normalizeDiscountTypes(
+    final List<dynamic>? input,
+    final int expectedLength,
+  ) {
+    final List<String> result = List<String>.filled(expectedLength, '');
+    if (input != null) {
+      for (int i = 0; i < input.length && i < expectedLength; i++) {
+        result[i] = (input[i] as String?) ?? '';
+      }
+    }
+    return result;
+  }
 
   static List<double>? fromJsonListDouble(final List<dynamic>? input) {
     if (input == null) {
@@ -155,6 +176,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   final List<List<String>> labels;
   final List<String> pricePers;
   final List<bool> pricesAreDiscounted;
+  final List<String> discountTypes;
   final List<double> prices;
   final List<double?> pricesWithoutDiscount;
 
@@ -171,6 +193,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     result[_jsonTagLabels] = labels;
     result[_jsonTagPricePers] = pricePers;
     result[_jsonTagAreDiscounted] = pricesAreDiscounted;
+    result[_jsonTagDiscountTypes] = discountTypes;
     result[_jsonTagPrices] = prices;
     result[_jsonTagPricesWithoutDiscount] = pricesWithoutDiscount;
     return result;
@@ -237,6 +260,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
           labels: <List<String>>[labels[i]],
           pricePers: <String>[pricePers[i]],
           pricesAreDiscounted: <bool>[pricesAreDiscounted[i]],
+          discountTypes: <String>[discountTypes[i]],
           prices: <double>[prices[i]],
           pricesWithoutDiscount: <double?>[pricesWithoutDiscount[i]],
         );
@@ -248,6 +272,8 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
       final String barcode = barcodes[i];
       final bool isProduct = barcode.isNotEmpty;
       final bool priceIsDiscounted = pricesAreDiscounted[i];
+      final DiscountType? discountType =
+          priceIsDiscounted ? DiscountType.fromOffTag(discountTypes[i]) : null;
       double price = prices[i];
       double? priceWithoutDiscount = pricesWithoutDiscount[i];
       if (priceIsDiscounted) {
@@ -261,23 +287,26 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
           }
         }
       }
-      final Price newPrice = Price()
-        ..date = date
-        ..currency = currency
-        ..locationOSMId = locationOSMId
-        ..locationOSMType = locationOSMType
-        ..proofId = proofId
-        ..productCode = isProduct ? barcode : null
-        ..categoryTag = isProduct ? null : categories[i]
-        ..originsTags = isProduct ? null : origins[i]
-        ..labelsTags = isProduct ? null : labels[i]
-        ..pricePer = isProduct ? null : PricePer.fromOffTag(pricePers[i])
-        ..type = isProduct ? PriceType.product : PriceType.category
-        ..priceIsDiscounted = priceIsDiscounted
-        ..price = _fixPriceDecimals(price)
-        ..priceWithoutDiscount = priceWithoutDiscount == null
-            ? null
-            : _fixPriceDecimals(priceWithoutDiscount);
+      final Price newPrice =
+          Price()
+            ..date = date
+            ..currency = currency
+            ..locationOSMId = locationOSMId
+            ..locationOSMType = locationOSMType
+            ..proofId = proofId
+            ..productCode = isProduct ? barcode : null
+            ..categoryTag = isProduct ? null : categories[i]
+            ..originsTags = isProduct ? null : origins[i]
+            ..labelsTags = isProduct ? null : labels[i]
+            ..pricePer = isProduct ? null : PricePer.fromOffTag(pricePers[i])
+            ..type = isProduct ? PriceType.product : PriceType.category
+            ..priceIsDiscounted = priceIsDiscounted
+            ..discountType = discountType
+            ..price = _fixPriceDecimals(price)
+            ..priceWithoutDiscount =
+                priceWithoutDiscount == null
+                    ? null
+                    : _fixPriceDecimals(priceWithoutDiscount);
 
       // create price
       final MaybeError<Price?> addedPrice =

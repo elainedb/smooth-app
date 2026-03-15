@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
 
@@ -30,12 +31,24 @@ class PriceAmountModel {
     _priceWithoutDiscount = value;
   }
 
+  DiscountType? _discountType;
+
+  DiscountType? get discountType => _discountType;
+
+  set discountType(final DiscountType? value) {
+    _hasChanged = true;
+    _discountType = value;
+  }
+
   late double _checkedPaidPrice;
   double? _checkedPriceWithoutDiscount;
+  DiscountType? _checkedDiscountType;
 
   double get checkedPaidPrice => _checkedPaidPrice;
 
   double? get checkedPriceWithoutDiscount => _checkedPriceWithoutDiscount;
+
+  DiscountType? get checkedDiscountType => _checkedDiscountType;
 
   bool _promo = false;
 
@@ -63,6 +76,7 @@ class PriceAmountModel {
     }
     _checkedPaidPrice = validateDouble(paidPrice)!;
     _checkedPriceWithoutDiscount = null;
+    _checkedDiscountType = null;
     if (promo) {
       if (priceWithoutDiscount.isNotEmpty) {
         _checkedPriceWithoutDiscount = validateDouble(priceWithoutDiscount);
@@ -70,6 +84,7 @@ class PriceAmountModel {
           return appLocalizations.prices_amount_price_incorrect;
         }
       }
+      _checkedDiscountType = _discountType;
     }
     return null;
   }

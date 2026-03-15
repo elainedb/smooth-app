@@ -63,6 +63,7 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTypes,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
     LocalDatabase? localDatabase,
@@ -91,6 +92,7 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTypes: discountTypes,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
     );
@@ -124,6 +126,7 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTypes,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
   }) => BackgroundTaskAddOtherPrice._(
@@ -140,6 +143,7 @@ class BackgroundTaskAddOtherPrice extends BackgroundTaskPrice {
     labels: labels,
     pricePers: pricePers,
     pricesAreDiscounted: pricesAreDiscounted,
+    discountTypes: discountTypes,
     prices: prices,
     pricesWithoutDiscount: pricesWithoutDiscount,
     stamp: BackgroundTaskPrice.getStamp(

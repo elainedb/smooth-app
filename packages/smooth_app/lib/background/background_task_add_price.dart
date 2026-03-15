@@ -47,6 +47,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required super.labels,
     required super.pricePers,
     required super.pricesAreDiscounted,
+    required super.discountTypes,
     required super.prices,
     required super.pricesWithoutDiscount,
   });
@@ -123,11 +124,12 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTypes,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
-  }) async {
+    }) async {
     final LocalDatabase localDatabase = context.read<LocalDatabase>();
     final String uniqueId = await _operationType.getNewKey(localDatabase);
     final BackgroundTask task = _getNewTask(
@@ -144,6 +146,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTypes: discountTypes,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
       displaySnackbar: displaySnackbar,
@@ -157,10 +160,10 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       context: context,
       queue: BackgroundTaskQueue.slow,
     );
-  }
+    }
 
-  /// Returns a new background task about changing a product.
-  static BackgroundTaskAddPrice _getNewTask({
+    /// Returns a new background task about changing a product.
+    static BackgroundTaskAddPrice _getNewTask({
     required final String uniqueId,
     required final CropParameters cropObject,
     required final ProofType proofType,
@@ -174,11 +177,12 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTypes,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
-  }) => BackgroundTaskAddPrice._(
+    }) => BackgroundTaskAddPrice._(
     uniqueId: uniqueId,
     processName: _operationType.processName,
     fullPath: cropObject.fullFile!.path,
@@ -199,6 +203,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     labels: labels,
     pricePers: pricePers,
     pricesAreDiscounted: pricesAreDiscounted,
+    discountTypes: discountTypes,
     prices: prices,
     pricesWithoutDiscount: pricesWithoutDiscount,
     stamp: BackgroundTaskPrice.getStamp(
@@ -208,8 +213,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     ),
     displaySnackbar: displaySnackbar,
     readyForPriceTagValidation: readyForPriceTagValidation,
-  );
-
+    );
   @override
   (String, AlignmentGeometry)? getFloatingMessage(
     final AppLocalizations appLocalizations,
@@ -292,6 +296,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTypes: discountTypes,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
     );

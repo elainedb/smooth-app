@@ -122,8 +122,58 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
               ),
             ],
           ),
+          if (model.promo) const SizedBox(height: SMALL_SPACE),
+          if (model.promo)
+            DropdownButtonFormField<DiscountType>(
+              initialValue: model.discountType,
+              decoration: InputDecoration(
+                labelText: appLocalizations.prices_discount_type,
+                border: const OutlineInputBorder(),
+              ),
+              items: <DropdownMenuItem<DiscountType>>[
+                const DropdownMenuItem<DiscountType>(
+                  value: null,
+                  child: Text(''),
+                ),
+                ...DiscountType.values.map(
+                  (DiscountType type) => DropdownMenuItem<DiscountType>(
+                    value: type,
+                    child: Text(_getDiscountTypeLabel(appLocalizations, type)),
+                  ),
+                ),
+              ],
+              onChanged: (DiscountType? value) {
+                setState(() {
+                  model.discountType = value;
+                });
+              },
+            ),
         ],
       ),
     );
+  }
+
+  String _getDiscountTypeLabel(
+    final AppLocalizations appLocalizations,
+    final DiscountType type,
+  ) {
+    switch (type) {
+      case DiscountType.quantity:
+        return appLocalizations.prices_discount_type_quantity_discount;
+      case DiscountType.sale:
+        return appLocalizations.prices_discount_type_sale;
+      case DiscountType.seasonal:
+        return appLocalizations.prices_discount_type_seasonal;
+      case DiscountType.loyaltyProgram:
+        return appLocalizations.prices_discount_type_loyalty_program;
+      case DiscountType.expiresSoon:
+        return appLocalizations.prices_discount_type_expires_soon;
+      case DiscountType.pickItYourself:
+        return appLocalizations.prices_discount_type_pick_it_yourself;
+      case DiscountType.secondHand:
+        return appLocalizations.prices_discount_type_second_hand;
+      case DiscountType.other:
+        return appLocalizations.prices_discount_type_other;
+    }
   }
 }

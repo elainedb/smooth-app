@@ -30,6 +30,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     required this.pricesAreDiscounted,
     required this.prices,
     required this.pricesWithoutDiscount,
+    required this.discountTypes,
   });
 
   BackgroundTaskPrice.fromJson(super.json)
@@ -57,6 +58,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
       pricesWithoutDiscount = json.containsKey(_jsonTagPriceWithoutDiscount)
           ? <double?>[json[_jsonTagPriceWithoutDiscount] as double?]
           : _fromJsonListNullableDouble(json[_jsonTagPricesWithoutDiscount])!,
+      discountTypes = _fromJsonListString(json[_jsonTagDiscountTypes]) ?? List<String>.filled((json[_jsonTagBarcodes] as List<dynamic>?)?.length ?? (json.containsKey(_jsonTagBarcode) ? 1 : 0), ''),
       super.fromJson();
 
   static const String _jsonTagDate = 'date';
@@ -71,6 +73,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   static const String _jsonTagAreDiscounted = 'areDiscounted';
   static const String _jsonTagPrices = 'prices';
   static const String _jsonTagPricesWithoutDiscount = 'pricesWithoutDiscount';
+  static const String _jsonTagDiscountTypes = 'discountTypes';
   @Deprecated('Use [_jsonTagBarcodes] instead')
   static const String _jsonTagBarcode = 'barcode';
   @Deprecated('Use [_jsonTagAreDiscounted] instead')
@@ -157,6 +160,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   final List<bool> pricesAreDiscounted;
   final List<double> prices;
   final List<double?> pricesWithoutDiscount;
+  final List<String> discountTypes;
 
   @override
   Map<String, dynamic> toJson() {
@@ -173,6 +177,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     result[_jsonTagAreDiscounted] = pricesAreDiscounted;
     result[_jsonTagPrices] = prices;
     result[_jsonTagPricesWithoutDiscount] = pricesWithoutDiscount;
+    result[_jsonTagDiscountTypes] = discountTypes;
     return result;
   }
 
@@ -239,6 +244,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
           pricesAreDiscounted: <bool>[pricesAreDiscounted[i]],
           prices: <double>[prices[i]],
           pricesWithoutDiscount: <double?>[pricesWithoutDiscount[i]],
+          discountTypes: <String>[discountTypes[i]],
         );
       }
       return;
@@ -274,6 +280,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
         ..pricePer = isProduct ? null : PricePer.fromOffTag(pricePers[i])
         ..type = isProduct ? PriceType.product : PriceType.category
         ..priceIsDiscounted = priceIsDiscounted
+        ..discountType = priceIsDiscounted && discountTypes[i].isNotEmpty ? DiscountType.fromOffTag(discountTypes[i]) : null
         ..price = _fixPriceDecimals(price)
         ..priceWithoutDiscount = priceWithoutDiscount == null
             ? null

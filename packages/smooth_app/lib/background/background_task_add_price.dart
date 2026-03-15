@@ -47,6 +47,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required super.labels,
     required super.pricePers,
     required super.pricesAreDiscounted,
+    required super.discountTypes,
     required super.prices,
     required super.pricesWithoutDiscount,
   });
@@ -123,6 +124,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTypes,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
@@ -144,6 +146,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTypes: discountTypes,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
       displaySnackbar: displaySnackbar,
@@ -174,6 +177,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<List<String>> labels,
     required final List<String> pricePers,
     required final List<bool> pricesAreDiscounted,
+    required final List<String> discountTypes,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
@@ -199,9 +203,9 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     labels: labels,
     pricePers: pricePers,
     pricesAreDiscounted: pricesAreDiscounted,
+    discountTypes: discountTypes,
     prices: prices,
-    pricesWithoutDiscount: pricesWithoutDiscount,
-    stamp: BackgroundTaskPrice.getStamp(
+    pricesWithoutDiscount: pricesWithoutDiscount,    stamp: BackgroundTaskPrice.getStamp(
       date: date,
       locationOSMId: locationOSMId,
       locationOSMType: locationOSMType,
@@ -292,6 +296,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTypes: discountTypes,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
     );

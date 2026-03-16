@@ -100,6 +100,12 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            _DiscountTypeDropdown(
+              model: model,
+              onChanged: (final String value) =>
+                  setState(() => model.discountType = value),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[
@@ -125,5 +131,74 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
         ],
       ),
     );
+  }
+}
+
+class _DiscountTypeDropdown extends StatelessWidget {
+  const _DiscountTypeDropdown({required this.model, required this.onChanged});
+
+  final PriceAmountModel model;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: SMALL_SPACE),
+      child: DropdownButtonFormField<String>(
+        initialValue: model.discountType,
+        decoration: InputDecoration(
+          labelText: appLocalizations.prices_amount_discount_type,
+        ),
+        isExpanded: true,
+        items: <DropdownMenuItem<String>>[
+          DropdownMenuItem<String>(
+            value: '',
+            child: Text(
+              appLocalizations.prices_amount_discount_type,
+              style: const TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+          ...DiscountType.values.map(
+            (final DiscountType type) => DropdownMenuItem<String>(
+              value: type.offTag,
+              child: Text(_getDiscountTypeLabel(appLocalizations, type)),
+            ),
+          ),
+        ],
+        onChanged: (final String? value) {
+          if (value == null) {
+            return;
+          }
+          onChanged(value);
+        },
+      ),
+    );
+  }
+}
+
+/// Returns a localized label for a [DiscountType].
+String _getDiscountTypeLabel(
+  final AppLocalizations appLocalizations,
+  final DiscountType type,
+) {
+  switch (type) {
+    case DiscountType.quantity:
+      return appLocalizations.prices_discount_type_quantity;
+    case DiscountType.sale:
+      return appLocalizations.prices_discount_type_sale;
+    case DiscountType.seasonal:
+      return appLocalizations.prices_discount_type_seasonal;
+    case DiscountType.loyaltyProgram:
+      return appLocalizations.prices_discount_type_loyalty_program;
+    case DiscountType.expiresSoon:
+      return appLocalizations.prices_discount_type_expires_soon;
+    case DiscountType.pickItYourself:
+      return appLocalizations.prices_discount_type_pick_it_yourself;
+    case DiscountType.secondHand:
+      return appLocalizations.prices_discount_type_second_hand;
+    case DiscountType.other:
+      return appLocalizations.prices_discount_type_other;
   }
 }

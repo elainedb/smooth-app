@@ -95,6 +95,25 @@ class PriceDataWidget extends StatelessWidget {
                   PriceDataDiscountedValue(price: price),
                 ],
               ),
+              if (price.priceIsDiscounted == true && price.discountType != null)
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: PriceDataEntry(
+                        icon: const Icon(
+                          Icons.local_offer_outlined,
+                          size: 19.0,
+                        ),
+                        label:
+                            '${appLocalizations.prices_amount_discount_type}: '
+                            '${_getDiscountTypeLabel(appLocalizations, price.discountType!)}',
+                        labelPadding: const EdgeInsetsDirectional.only(
+                          bottom: 2.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               Row(
                 children: <Widget>[
                   Expanded(
@@ -115,6 +134,30 @@ class PriceDataWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+String _getDiscountTypeLabel(
+  final AppLocalizations appLocalizations,
+  final DiscountType type,
+) {
+  switch (type) {
+    case DiscountType.quantity:
+      return appLocalizations.prices_discount_type_quantity;
+    case DiscountType.sale:
+      return appLocalizations.prices_discount_type_sale;
+    case DiscountType.seasonal:
+      return appLocalizations.prices_discount_type_seasonal;
+    case DiscountType.loyaltyProgram:
+      return appLocalizations.prices_discount_type_loyalty_program;
+    case DiscountType.expiresSoon:
+      return appLocalizations.prices_discount_type_expires_soon;
+    case DiscountType.pickItYourself:
+      return appLocalizations.prices_discount_type_pick_it_yourself;
+    case DiscountType.secondHand:
+      return appLocalizations.prices_discount_type_second_hand;
+    case DiscountType.other:
+      return appLocalizations.prices_discount_type_other;
   }
 }
 

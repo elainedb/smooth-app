@@ -5312,6 +5312,60 @@ abstract class AppLocalizations {
   /// **'Know more about Open Prices'**
   String get prices_menu_know_more;
 
+  /// Label for the discount type field
+  ///
+  /// In en, this message translates to:
+  /// **'Discount type'**
+  String get prices_discount_type;
+
+  /// Discount type: quantity discount
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity discount'**
+  String get prices_discount_type_quantity;
+
+  /// Discount type: sale
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get prices_discount_type_sale;
+
+  /// Discount type: seasonal
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal'**
+  String get prices_discount_type_seasonal;
+
+  /// Discount type: loyalty program
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty program'**
+  String get prices_discount_type_loyalty_program;
+
+  /// Discount type: expires soon
+  ///
+  /// In en, this message translates to:
+  /// **'Expires soon'**
+  String get prices_discount_type_expires_soon;
+
+  /// Discount type: pick it yourself
+  ///
+  /// In en, this message translates to:
+  /// **'Pick it yourself'**
+  String get prices_discount_type_pick_it_yourself;
+
+  /// Discount type: second hand
+  ///
+  /// In en, this message translates to:
+  /// **'Second hand'**
+  String get prices_discount_type_second_hand;
+
+  /// Discount type: other
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get prices_discount_type_other;
+
   /// User dev preferences - Import history - Result successful
   ///
   /// In en, this message translates to:

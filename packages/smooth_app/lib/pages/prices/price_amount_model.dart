@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
 
@@ -45,6 +46,20 @@ class PriceAmountModel {
     _hasChanged = true;
     _promo = value;
   }
+
+  String _discountType = '';
+
+  /// The discount type as an offTag string, or empty string for none.
+  String get discountType => _discountType;
+
+  set discountType(final String value) {
+    _hasChanged = true;
+    _discountType = value;
+  }
+
+  /// Returns the [DiscountType] if set, or null.
+  DiscountType? get checkedDiscountType =>
+      _discountType.isEmpty ? null : DiscountType.fromOffTag(_discountType);
 
   /// Returns the value as a valid strictly positive `double`, or `null`.
   static double? validateDouble(final String value) {

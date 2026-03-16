@@ -20,6 +20,30 @@ class PriceExistingAmountCard extends StatefulWidget {
 }
 
 class _PriceExistingAmountCardState extends State<PriceExistingAmountCard> {
+  static String _getDiscountTypeLabel(
+    final AppLocalizations appLocalizations,
+    final DiscountType type,
+  ) {
+    switch (type) {
+      case DiscountType.quantity:
+        return appLocalizations.prices_discount_type_quantity;
+      case DiscountType.sale:
+        return appLocalizations.prices_discount_type_sale;
+      case DiscountType.seasonal:
+        return appLocalizations.prices_discount_type_seasonal;
+      case DiscountType.loyaltyProgram:
+        return appLocalizations.prices_discount_type_loyalty_program;
+      case DiscountType.expiresSoon:
+        return appLocalizations.prices_discount_type_expires_soon;
+      case DiscountType.pickItYourself:
+        return appLocalizations.prices_discount_type_pick_it_yourself;
+      case DiscountType.secondHand:
+        return appLocalizations.prices_discount_type_second_hand;
+      case DiscountType.other:
+        return appLocalizations.prices_discount_type_other;
+    }
+  }
+
   final PriceL10nHelper _helper = PriceL10nHelper();
 
   @override
@@ -70,6 +94,22 @@ class _PriceExistingAmountCardState extends State<PriceExistingAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (isDiscounted && widget.price.discountType != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: SMALL_SPACE,
+              ),
+              child: TextFormField(
+                initialValue: _getDiscountTypeLabel(
+                  appLocalizations,
+                  widget.price.discountType!,
+                ),
+                decoration: InputDecoration(
+                  labelText: appLocalizations.prices_discount_type,
+                ),
+                enabled: false,
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

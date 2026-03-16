@@ -5099,6 +5099,60 @@ abstract class AppLocalizations {
   /// **'Amount'**
   String get prices_amount_subtitle;
 
+  /// Label for the discount type in price entry form
+  ///
+  /// In en, this message translates to:
+  /// **'Discount type'**
+  String get prices_discount_type;
+
+  /// Discount type for quantity discounts
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity discount'**
+  String get prices_discount_type_quantity_discount;
+
+  /// Discount type for sales
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get prices_discount_type_sale;
+
+  /// Discount type for seasonal discounts
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal'**
+  String get prices_discount_type_seasonal;
+
+  /// Discount type for loyalty program
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty program'**
+  String get prices_discount_type_loyalty_program;
+
+  /// Discount type for items expiring soon
+  ///
+  /// In en, this message translates to:
+  /// **'Expires soon'**
+  String get prices_discount_type_expires_soon;
+
+  /// Discount type for picking it yourself
+  ///
+  /// In en, this message translates to:
+  /// **'Pick it yourself'**
+  String get prices_discount_type_pick_it_yourself;
+
+  /// Discount type for second hand items
+  ///
+  /// In en, this message translates to:
+  /// **'Second hand'**
+  String get prices_discount_type_second_hand;
+
+  /// Discount type for other discounts
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get prices_discount_type_other;
+
   /// No description provided for @prices_amount_is_discounted.
   ///
   /// In en, this message translates to:

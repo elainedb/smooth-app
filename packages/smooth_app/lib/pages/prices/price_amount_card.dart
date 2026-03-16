@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_amount_model.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
@@ -95,11 +96,39 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             ),
           SwitchListTile(
             value: model.promo,
-            onChanged: (final bool value) =>
-                setState(() => model.promo = !model.promo),
+            onChanged: (final bool value) {
+              setState(() {
+                model.promo = !model.promo;
+                if (!model.promo) {
+                  model.discountType = null;
+                }
+              });
+            },
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo) ...<Widget>[
+            SmoothDropdownButton<DiscountType?>(
+              isExpanded: true,
+              value: model.discountType,
+              items: <SmoothDropdownItem<DiscountType?>>[
+                SmoothDropdownItem<DiscountType?>(
+                  value: null,
+                  label: '',
+                ),
+                ...DiscountType.values.map(
+                  (final DiscountType discountType) =>
+                      SmoothDropdownItem<DiscountType?>(
+                    value: discountType,
+                    label: discountType.getTitle(appLocalizations),
+                  ),
+                ),
+              ],
+              onChanged: (final DiscountType? value) {
+                setState(() => model.discountType = value);
+              },
+            ),
+          ],
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

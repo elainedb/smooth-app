@@ -224,16 +224,16 @@ class PriceModel with ChangeNotifier {
     final List<bool> pricesAreDiscounted = <bool>[];
     final List<double> prices = <double>[];
     final List<double?> pricesWithoutDiscount = <double?>[];
+    final List<String> discountTypes = <String>[];
     for (final PriceAmountModel priceAmountModel in _priceAmountModels) {
       barcodes.add(priceAmountModel.product.barcode);
       categories.add(priceAmountModel.product.categoryTag);
       origins.add(priceAmountModel.product.originTags);
-      // TODO(monsieurtanuki): to be implemented when supported by "prices"
-      labels.add(<String>[]);
       pricePers.add(priceAmountModel.product.pricePer.offTag);
       pricesAreDiscounted.add(priceAmountModel.promo);
       prices.add(priceAmountModel.checkedPaidPrice);
       pricesWithoutDiscount.add(priceAmountModel.checkedPriceWithoutDiscount);
+      discountTypes.add(priceAmountModel.promo ? (priceAmountModel.discountType?.offTag ?? '') : '');
     }
     if (proof != null) {
       return BackgroundTaskAddOtherPrice.addTask(
@@ -253,6 +253,7 @@ class PriceModel with ChangeNotifier {
         pricesAreDiscounted: pricesAreDiscounted,
         prices: prices,
         pricesWithoutDiscount: pricesWithoutDiscount,
+        discountTypes: discountTypes,
       );
     }
     return BackgroundTaskAddPrice.addTask(
@@ -274,6 +275,7 @@ class PriceModel with ChangeNotifier {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
       displaySnackbar: displaySnackbar,
       readyForPriceTagValidation: readyForPriceTagValidation,
     );

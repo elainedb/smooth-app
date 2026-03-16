@@ -37,6 +37,15 @@ class PriceAmountModel {
 
   double? get checkedPriceWithoutDiscount => _checkedPriceWithoutDiscount;
 
+  String _discountType = '';
+
+  String get discountType => _discountType;
+
+  set discountType(final String value) {
+    _hasChanged = true;
+    _discountType = value;
+  }
+
   bool _promo = false;
 
   bool get promo => _promo;

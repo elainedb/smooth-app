@@ -49,6 +49,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required super.pricesAreDiscounted,
     required super.prices,
     required super.pricesWithoutDiscount,
+    required super.discountTypes,
   });
 
   BackgroundTaskAddPrice.fromJson(super.json)
@@ -127,6 +128,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
+    List<String> discountTypes = const <String>[],
   }) async {
     final LocalDatabase localDatabase = context.read<LocalDatabase>();
     final String uniqueId = await _operationType.getNewKey(localDatabase);
@@ -146,6 +148,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
       displaySnackbar: displaySnackbar,
       readyForPriceTagValidation: readyForPriceTagValidation,
     );
@@ -178,6 +181,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<double?> pricesWithoutDiscount,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
+    List<String> discountTypes = const <String>[],
   }) => BackgroundTaskAddPrice._(
     uniqueId: uniqueId,
     processName: _operationType.processName,
@@ -201,6 +205,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     pricesAreDiscounted: pricesAreDiscounted,
     prices: prices,
     pricesWithoutDiscount: pricesWithoutDiscount,
+    discountTypes: discountTypes,
     stamp: BackgroundTaskPrice.getStamp(
       date: date,
       locationOSMId: locationOSMId,
@@ -294,6 +299,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
     );
   }
 }

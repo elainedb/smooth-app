@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_amount_model.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
@@ -100,6 +101,37 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: SMALL_SPACE,
+              ),
+              child: DropdownButtonFormField<String>(
+                initialValue: model.discountType,
+                decoration: InputDecoration(
+                  labelText: appLocalizations.prices_amount_discount_type,
+                ),
+                items: <DropdownMenuItem<String>>[
+                  const DropdownMenuItem<String>(
+                    value: '',
+                    child: Text('-'),
+                  ),
+                  ...DiscountType.values.map(
+                    (final DiscountType type) => DropdownMenuItem<String>(
+                      value: type.offTag,
+                      child: Text(
+                        getDiscountTypeLabel(type, appLocalizations),
+                      ),
+                    ),
+                  ),
+                ],
+                onChanged: (final String? value) {
+                  if (value != null) {
+                    setState(() => model.discountType = value);
+                  }
+                },
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

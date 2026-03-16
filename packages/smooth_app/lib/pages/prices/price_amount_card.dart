@@ -100,6 +100,13 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: SMALL_SPACE,
+              ),
+              child: _DiscountTypeDropdown(model: model),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[
@@ -125,5 +132,67 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
         ],
       ),
     );
+  }
+}
+
+class _DiscountTypeDropdown extends StatefulWidget {
+  const _DiscountTypeDropdown({required this.model});
+
+  final PriceAmountModel model;
+
+  @override
+  State<_DiscountTypeDropdown> createState() => _DiscountTypeDropdownState();
+}
+
+class _DiscountTypeDropdownState extends State<_DiscountTypeDropdown> {
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final String current = widget.model.discountType;
+
+    return DropdownButtonFormField<String>(
+      initialValue: current,
+      decoration: InputDecoration(
+        labelText: appLocalizations.prices_amount_discount_type,
+      ),
+      items: <DropdownMenuItem<String>>[
+        const DropdownMenuItem<String>(value: '', child: Text('—')),
+        for (final DiscountType type in DiscountType.values)
+          DropdownMenuItem<String>(
+            value: type.offTag,
+            child: Text(getDiscountTypeLabel(appLocalizations, type)),
+          ),
+      ],
+      onChanged: (final String? value) {
+        setState(() {
+          widget.model.discountType = value ?? '';
+        });
+      },
+    );
+  }
+}
+
+/// Returns the localized label for a [DiscountType].
+String getDiscountTypeLabel(
+  final AppLocalizations appLocalizations,
+  final DiscountType type,
+) {
+  switch (type) {
+    case DiscountType.quantity:
+      return appLocalizations.prices_discount_type_quantity;
+    case DiscountType.sale:
+      return appLocalizations.prices_discount_type_sale;
+    case DiscountType.seasonal:
+      return appLocalizations.prices_discount_type_seasonal;
+    case DiscountType.loyaltyProgram:
+      return appLocalizations.prices_discount_type_loyalty_program;
+    case DiscountType.expiresSoon:
+      return appLocalizations.prices_discount_type_expires_soon;
+    case DiscountType.pickItYourself:
+      return appLocalizations.prices_discount_type_pick_it_yourself;
+    case DiscountType.secondHand:
+      return appLocalizations.prices_discount_type_second_hand;
+    case DiscountType.other:
+      return appLocalizations.prices_discount_type_other;
   }
 }

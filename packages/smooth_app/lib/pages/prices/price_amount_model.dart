@@ -46,6 +46,15 @@ class PriceAmountModel {
     _promo = value;
   }
 
+  String _discountType = '';
+
+  String get discountType => _discountType;
+
+  set discountType(final String value) {
+    _hasChanged = true;
+    _discountType = value;
+  }
+
   /// Returns the value as a valid strictly positive `double`, or `null`.
   static double? validateDouble(final String value) {
     final double? res = double.tryParse(value.replaceAll(',', '.'));

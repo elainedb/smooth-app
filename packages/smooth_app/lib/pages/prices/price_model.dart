@@ -222,6 +222,7 @@ class PriceModel with ChangeNotifier {
     final List<List<String>> labels = <List<String>>[];
     final List<String> pricePers = <String>[];
     final List<bool> pricesAreDiscounted = <bool>[];
+    final List<String> discountTypes = <String>[];
     final List<double> prices = <double>[];
     final List<double?> pricesWithoutDiscount = <double?>[];
     for (final PriceAmountModel priceAmountModel in _priceAmountModels) {
@@ -232,6 +233,7 @@ class PriceModel with ChangeNotifier {
       labels.add(<String>[]);
       pricePers.add(priceAmountModel.product.pricePer.offTag);
       pricesAreDiscounted.add(priceAmountModel.promo);
+      discountTypes.add(priceAmountModel.promo ? priceAmountModel.discountType : '');
       prices.add(priceAmountModel.checkedPaidPrice);
       pricesWithoutDiscount.add(priceAmountModel.checkedPriceWithoutDiscount);
     }
@@ -251,6 +253,7 @@ class PriceModel with ChangeNotifier {
         labels: labels,
         pricePers: pricePers,
         pricesAreDiscounted: pricesAreDiscounted,
+        discountTypes: discountTypes,
         prices: prices,
         pricesWithoutDiscount: pricesWithoutDiscount,
       );
@@ -272,6 +275,7 @@ class PriceModel with ChangeNotifier {
       labels: labels,
       pricePers: pricePers,
       pricesAreDiscounted: pricesAreDiscounted,
+      discountTypes: discountTypes,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
       displaySnackbar: displaySnackbar,

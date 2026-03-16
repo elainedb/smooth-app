@@ -28,6 +28,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     required this.labels,
     required this.pricePers,
     required this.pricesAreDiscounted,
+    required this.discountTypes,
     required this.prices,
     required this.pricesWithoutDiscount,
   });
@@ -51,6 +52,10 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
       pricesAreDiscounted = json.containsKey(_jsonTagIsDiscounted)
           ? <bool>[json[_jsonTagIsDiscounted] as bool]
           : _fromJsonListBool(json[_jsonTagAreDiscounted])!,
+      discountTypes = _fromJsonListStringNormalize(
+          json[_jsonTagDiscountTypes],
+          json.containsKey(_jsonTagBarcode) ? 1 : (_fromJsonListString(json[_jsonTagBarcodes])?.length ?? 0),
+      ) ?? <String>[],
       prices = json.containsKey(_jsonTagPrice)
           ? <double>[json[_jsonTagPrice] as double]
           : fromJsonListDouble(json[_jsonTagPrices])!,
@@ -69,6 +74,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   static const String _jsonTagLabels = 'labels';
   static const String _jsonTagPricePers = 'pricePers';
   static const String _jsonTagAreDiscounted = 'areDiscounted';
+  static const String _jsonTagDiscountTypes = 'discountTypes';
   static const String _jsonTagPrices = 'prices';
   static const String _jsonTagPricesWithoutDiscount = 'pricesWithoutDiscount';
   @Deprecated('Use [_jsonTagBarcodes] instead')
@@ -115,6 +121,23 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     return result;
   }
 
+  static List<String>? _fromJsonListStringNormalize(
+    final List<dynamic>? input,
+    final int length,
+  ) {
+    if (input == null) {
+      return List<String>.filled(length, '');
+    }
+    final List<String> result = <String>[];
+    for (final dynamic item in input) {
+      result.add(item as String);
+    }
+    while (result.length < length) {
+      result.add('');
+    }
+    return result;
+  }
+
   static List<List<String>>? _fromJsonListListString(
     final List<dynamic>? input,
   ) {
@@ -155,6 +178,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
   final List<List<String>> labels;
   final List<String> pricePers;
   final List<bool> pricesAreDiscounted;
+  final List<String> discountTypes;
   final List<double> prices;
   final List<double?> pricesWithoutDiscount;
 
@@ -171,6 +195,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
     result[_jsonTagLabels] = labels;
     result[_jsonTagPricePers] = pricePers;
     result[_jsonTagAreDiscounted] = pricesAreDiscounted;
+    result[_jsonTagDiscountTypes] = discountTypes;
     result[_jsonTagPrices] = prices;
     result[_jsonTagPricesWithoutDiscount] = pricesWithoutDiscount;
     return result;
@@ -237,6 +262,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
           labels: <List<String>>[labels[i]],
           pricePers: <String>[pricePers[i]],
           pricesAreDiscounted: <bool>[pricesAreDiscounted[i]],
+          discountTypes: <String>[discountTypes[i]],
           prices: <double>[prices[i]],
           pricesWithoutDiscount: <double?>[pricesWithoutDiscount[i]],
         );
@@ -248,6 +274,7 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
       final String barcode = barcodes[i];
       final bool isProduct = barcode.isNotEmpty;
       final bool priceIsDiscounted = pricesAreDiscounted[i];
+      final String discountTypeOffTag = discountTypes[i];
       double price = prices[i];
       double? priceWithoutDiscount = pricesWithoutDiscount[i];
       if (priceIsDiscounted) {
@@ -274,6 +301,9 @@ abstract class BackgroundTaskPrice extends BackgroundTask {
         ..pricePer = isProduct ? null : PricePer.fromOffTag(pricePers[i])
         ..type = isProduct ? PriceType.product : PriceType.category
         ..priceIsDiscounted = priceIsDiscounted
+        ..discountType = priceIsDiscounted && discountTypeOffTag.isNotEmpty
+            ? DiscountType.fromOffTag(discountTypeOffTag)
+            : null
         ..price = _fixPriceDecimals(price)
         ..priceWithoutDiscount = priceWithoutDiscount == null
             ? null

@@ -5129,6 +5129,60 @@ abstract class AppLocalizations {
   /// **'One product is missing!'**
   String get prices_amount_no_product;
 
+  /// No description provided for @prices_amount_discount_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount type'**
+  String get prices_amount_discount_type;
+
+  /// No description provided for @discount_type_quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity discount'**
+  String get discount_type_quantity;
+
+  /// No description provided for @discount_type_sale.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get discount_type_sale;
+
+  /// No description provided for @discount_type_seasonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal'**
+  String get discount_type_seasonal;
+
+  /// No description provided for @discount_type_loyalty_program.
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty program'**
+  String get discount_type_loyalty_program;
+
+  /// No description provided for @discount_type_expires_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires soon'**
+  String get discount_type_expires_soon;
+
+  /// No description provided for @discount_type_pick_it_yourself.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick it yourself'**
+  String get discount_type_pick_it_yourself;
+
+  /// No description provided for @discount_type_second_hand.
+  ///
+  /// In en, this message translates to:
+  /// **'Second hand'**
+  String get discount_type_second_hand;
+
+  /// No description provided for @discount_type_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get discount_type_other;
+
   /// No description provided for @prices_amount_price_incorrect.
   ///
   /// In en, this message translates to:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
@@ -100,6 +101,12 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo) const SizedBox(height: SMALL_SPACE),
+          if (model.promo)
+            _DiscountTypeDropdown(
+              model: model,
+              onChanged: () => setState(() {}),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[
@@ -124,6 +131,41 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DiscountTypeDropdown extends StatelessWidget {
+  const _DiscountTypeDropdown({required this.model, required this.onChanged});
+
+  final PriceAmountModel model;
+  final VoidCallback onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final String currentOffTag = model.discountType;
+    return SmoothDropdownButton<String>(
+      isExpanded: true,
+      value: currentOffTag,
+      items: <SmoothDropdownItem<String>>[
+        SmoothDropdownItem<String>(
+          value: '',
+          label: appLocalizations.prices_discount_type,
+        ),
+        for (final DiscountType type in DiscountType.values)
+          SmoothDropdownItem<String>(
+            value: type.offTag,
+            label: type.getTitle(appLocalizations),
+          ),
+      ],
+      onChanged: (final String? value) {
+        if (value == null) {
+          return;
+        }
+        model.discountType = value;
+        onChanged();
+      },
     );
   }
 }

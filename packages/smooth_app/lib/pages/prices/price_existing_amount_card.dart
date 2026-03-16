@@ -7,6 +7,7 @@ import 'package:smooth_app/pages/prices/price_existing_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_l10n_helper.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
 import 'package:smooth_app/pages/prices/price_product_list_tile.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 
 /// Card that displays an existing amount.
 class PriceExistingAmountCard extends StatefulWidget {
@@ -90,6 +91,17 @@ class _PriceExistingAmountCardState extends State<PriceExistingAmountCard> {
               ),
             ],
           ),
+          if (isDiscounted && widget.price.discountType != null)
+            const SizedBox(height: SMALL_SPACE),
+          if (isDiscounted && widget.price.discountType != null)
+            TextFormField(
+              readOnly: true,
+              initialValue: widget.price.discountType!.getTitle(appLocalizations),
+              decoration: InputDecoration(
+                labelText: appLocalizations.prices_amount_discount_type,
+                border: const OutlineInputBorder(),
+              ),
+            ),
         ],
       ),
     );

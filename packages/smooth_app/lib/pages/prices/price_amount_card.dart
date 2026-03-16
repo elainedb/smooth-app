@@ -9,6 +9,7 @@ import 'package:smooth_app/pages/prices/price_amount_model.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
 import 'package:smooth_app/pages/prices/price_per_extension.dart';
 import 'package:smooth_app/pages/prices/price_product_list_tile.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/widgets/smooth_dropdown.dart';
 
 /// Card that displays the amounts (discounted or not) for price adding.
@@ -122,6 +123,27 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
               ),
             ],
           ),
+          if (model.promo)
+            const SizedBox(height: SMALL_SPACE),
+          if (model.promo)
+            SmoothDropdownButton<DiscountType?>(
+              isExpanded: true,
+              value: model.discountType,
+              items: <SmoothDropdownItem<DiscountType?>>[
+                SmoothDropdownItem<DiscountType?>(
+                  value: null,
+                  label: appLocalizations.prices_amount_discount_type,
+                ),
+                ...DiscountType.values.map(
+                  (final DiscountType discountType) => SmoothDropdownItem<DiscountType?>(
+                    value: discountType,
+                    label: discountType.getTitle(appLocalizations),
+                  ),
+                ),
+              ],
+              onChanged: (final DiscountType? value) =>
+                  setState(() => model.discountType = value),
+            ),
         ],
       ),
     );

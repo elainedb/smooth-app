@@ -1,3 +1,5 @@
+import 'package:openfoodfacts/openfoodfacts.dart';
+
 import 'package:flutter/material.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
@@ -37,6 +39,14 @@ class PriceAmountModel {
 
   double? get checkedPriceWithoutDiscount => _checkedPriceWithoutDiscount;
 
+  DiscountType? _discountType;
+
+  DiscountType? get discountType => _discountType;
+
+  set discountType(final DiscountType? value) {
+    _hasChanged = true;
+    _discountType = value;
+  }
   bool _promo = false;
 
   bool get promo => _promo;

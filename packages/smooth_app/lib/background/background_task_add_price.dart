@@ -49,6 +49,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required super.pricesAreDiscounted,
     required super.prices,
     required super.pricesWithoutDiscount,
+    required super.discountTypes,
   });
 
   BackgroundTaskAddPrice.fromJson(super.json)
@@ -125,6 +126,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<bool> pricesAreDiscounted,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
+    required final List<String> discountTypes,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
   }) async {
@@ -146,6 +148,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
       displaySnackbar: displaySnackbar,
       readyForPriceTagValidation: readyForPriceTagValidation,
     );
@@ -176,6 +179,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     required final List<bool> pricesAreDiscounted,
     required final List<double> prices,
     required final List<double?> pricesWithoutDiscount,
+    required final List<String> discountTypes,
     required final bool displaySnackbar,
     required final bool readyForPriceTagValidation,
   }) => BackgroundTaskAddPrice._(
@@ -201,6 +205,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
     pricesAreDiscounted: pricesAreDiscounted,
     prices: prices,
     pricesWithoutDiscount: pricesWithoutDiscount,
+    discountTypes: discountTypes,
     stamp: BackgroundTaskPrice.getStamp(
       date: date,
       locationOSMId: locationOSMId,
@@ -294,6 +299,7 @@ class BackgroundTaskAddPrice extends BackgroundTaskPrice {
       pricesAreDiscounted: pricesAreDiscounted,
       prices: prices,
       pricesWithoutDiscount: pricesWithoutDiscount,
+      discountTypes: discountTypes,
     );
   }
 }

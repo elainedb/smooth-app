@@ -70,6 +70,22 @@ class _PriceExistingAmountCardState extends State<PriceExistingAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (isDiscounted && widget.price.discountType != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: SMALL_SPACE,
+              ),
+              child: TextFormField(
+                initialValue: _getDiscountTypeLabel(
+                  appLocalizations,
+                  widget.price.discountType!,
+                ),
+                decoration: InputDecoration(
+                  labelText: appLocalizations.prices_amount_discount_type,
+                ),
+                enabled: false,
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[
@@ -94,4 +110,22 @@ class _PriceExistingAmountCardState extends State<PriceExistingAmountCard> {
       ),
     );
   }
+
+  String _getDiscountTypeLabel(
+    final AppLocalizations appLocalizations,
+    final DiscountType type,
+  ) => switch (type) {
+    DiscountType.quantity => appLocalizations.prices_discount_type_quantity,
+    DiscountType.sale => appLocalizations.prices_discount_type_sale,
+    DiscountType.seasonal => appLocalizations.prices_discount_type_seasonal,
+    DiscountType.loyaltyProgram =>
+      appLocalizations.prices_discount_type_loyalty_program,
+    DiscountType.expiresSoon =>
+      appLocalizations.prices_discount_type_expires_soon,
+    DiscountType.pickItYourself =>
+      appLocalizations.prices_discount_type_pick_it_yourself,
+    DiscountType.secondHand =>
+      appLocalizations.prices_discount_type_second_hand,
+    DiscountType.other => appLocalizations.prices_discount_type_other,
+  };
 }

@@ -10785,6 +10785,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{percent}%'**
   String percent_value(String percent);
+
+  /// No description provided for @prices_discount_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount type'**
+  String get prices_discount_type;
+
+  /// No description provided for @prices_discount_quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity discount'**
+  String get prices_discount_quantity;
+
+  /// No description provided for @prices_discount_sale.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get prices_discount_sale;
+
+  /// No description provided for @prices_discount_seasonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal'**
+  String get prices_discount_seasonal;
+
+  /// No description provided for @prices_discount_loyalty.
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty program'**
+  String get prices_discount_loyalty;
+
+  /// No description provided for @prices_discount_expires_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires soon'**
+  String get prices_discount_expires_soon;
+
+  /// No description provided for @prices_discount_pick_it_yourself.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick it yourself'**
+  String get prices_discount_pick_it_yourself;
+
+  /// No description provided for @prices_discount_second_hand.
+  ///
+  /// In en, this message translates to:
+  /// **'Second hand'**
+  String get prices_discount_second_hand;
+
+  /// No description provided for @prices_discount_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get prices_discount_other;
 }
 
 class _AppLocalizationsDelegate

@@ -9388,6 +9388,66 @@ abstract class AppLocalizations {
   /// **'Discount'**
   String get prices_discount;
 
+  /// Label for the discount type dropdown on prices
+  ///
+  /// In en, this message translates to:
+  /// **'Discount type'**
+  String get prices_discount_type;
+
+  /// No discount type selected
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get prices_discount_type_none;
+
+  /// Discount type: quantity discount
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity discount'**
+  String get prices_discount_type_quantity;
+
+  /// Discount type: sale
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get prices_discount_type_sale;
+
+  /// Discount type: seasonal
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal'**
+  String get prices_discount_type_seasonal;
+
+  /// Discount type: loyalty program
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty program'**
+  String get prices_discount_type_loyalty_program;
+
+  /// Discount type: expires soon
+  ///
+  /// In en, this message translates to:
+  /// **'Expires soon'**
+  String get prices_discount_type_expires_soon;
+
+  /// Discount type: pick it yourself
+  ///
+  /// In en, this message translates to:
+  /// **'Pick it yourself'**
+  String get prices_discount_type_pick_it_yourself;
+
+  /// Discount type: second hand
+  ///
+  /// In en, this message translates to:
+  /// **'Second hand'**
+  String get prices_discount_type_second_hand;
+
+  /// Discount type: other
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get prices_discount_type_other;
+
   /// Label for statistics section
   ///
   /// In en, this message translates to:

@@ -12,6 +12,16 @@ class PriceAmountModel {
 
   bool get hasChanged => _hasChanged;
 
+  /// Discount type offTag, or empty string for "none selected".
+  String _discountType = '';
+
+  String get discountType => _discountType;
+
+  set discountType(final String value) {
+    _hasChanged = true;
+    _discountType = value;
+  }
+
   String _paidPrice = '';
 
   String get paidPrice => _paidPrice;

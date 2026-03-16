@@ -100,6 +100,30 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            const SizedBox(height: SMALL_SPACE),
+          if (model.promo)
+            SmoothDropdownButton<String>(
+              isExpanded: true,
+              value: model.discountType,
+              items: <SmoothDropdownItem<String>>[
+                SmoothDropdownItem<String>(
+                  value: '',
+                  label: appLocalizations.prices_discount_type_none,
+                ),
+                for (final DiscountType type in DiscountType.values)
+                  SmoothDropdownItem<String>(
+                    value: type.offTag,
+                    label: _getDiscountTypeLabel(appLocalizations, type),
+                  ),
+              ],
+              onChanged: (final String? value) {
+                if (value == null) {
+                  return;
+                }
+                setState(() => model.discountType = value);
+              },
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[
@@ -126,4 +150,22 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
       ),
     );
   }
+
+  String _getDiscountTypeLabel(
+    final AppLocalizations appLocalizations,
+    final DiscountType type,
+  ) => switch (type) {
+    DiscountType.quantity => appLocalizations.prices_discount_type_quantity,
+    DiscountType.sale => appLocalizations.prices_discount_type_sale,
+    DiscountType.seasonal => appLocalizations.prices_discount_type_seasonal,
+    DiscountType.loyaltyProgram =>
+      appLocalizations.prices_discount_type_loyalty_program,
+    DiscountType.expiresSoon =>
+      appLocalizations.prices_discount_type_expires_soon,
+    DiscountType.pickItYourself =>
+      appLocalizations.prices_discount_type_pick_it_yourself,
+    DiscountType.secondHand =>
+      appLocalizations.prices_discount_type_second_hand,
+    DiscountType.other => appLocalizations.prices_discount_type_other,
+  };
 }

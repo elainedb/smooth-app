@@ -5744,5 +5744,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "prices_discount_type": "Discount type",
+  "prices_discount_quantity": "Quantity discount",
+  "prices_discount_sale": "Sale",
+  "prices_discount_seasonal": "Seasonal",
+  "prices_discount_loyaltyProgram": "Loyalty program",
+  "prices_discount_expiresSoon": "Expires soon",
+  "prices_discount_pickItYourself": "Pick it yourself",
+  "prices_discount_secondHand": "Second hand",
+  "prices_discount_other": "Other"
 }

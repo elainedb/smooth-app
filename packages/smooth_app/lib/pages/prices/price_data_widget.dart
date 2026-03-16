@@ -92,6 +92,15 @@ class PriceDataWidget extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (price.discountType != null)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        end: SMALL_SPACE,
+                      ),
+                      child: _PriceDiscountTypeChip(
+                        discountType: price.discountType!,
+                      ),
+                    ),
                   PriceDataDiscountedValue(price: price),
                 ],
               ),
@@ -116,6 +125,58 @@ class PriceDataWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PriceDiscountTypeChip extends StatelessWidget {
+  const _PriceDiscountTypeChip({required this.discountType});
+
+  final DiscountType discountType;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final SmoothColorsThemeExtension extension = context
+        .extension<SmoothColorsThemeExtension>();
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: extension.primaryLight,
+        borderRadius: ANGULAR_BORDER_RADIUS,
+      ),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: BALANCED_SPACE,
+          vertical: 3.0,
+        ),
+        child: Text(
+          _getDiscountTypeLabel(discountType, appLocalizations),
+          style: TextStyle(
+            fontSize: 13.0,
+            color: extension.primaryBlack,
+          ),
+        ),
+      ),
+    );
+  }
+
+  static String _getDiscountTypeLabel(
+    final DiscountType type,
+    final AppLocalizations appLocalizations,
+  ) =>
+      switch (type) {
+        DiscountType.quantity => appLocalizations.prices_discount_type_quantity,
+        DiscountType.sale => appLocalizations.prices_discount_type_sale,
+        DiscountType.seasonal => appLocalizations.prices_discount_type_seasonal,
+        DiscountType.loyaltyProgram =>
+          appLocalizations.prices_discount_type_loyalty_program,
+        DiscountType.expiresSoon =>
+          appLocalizations.prices_discount_type_expires_soon,
+        DiscountType.pickItYourself =>
+          appLocalizations.prices_discount_type_pick_it_yourself,
+        DiscountType.secondHand =>
+          appLocalizations.prices_discount_type_second_hand,
+        DiscountType.other => appLocalizations.prices_discount_type_other,
+      };
 }
 
 class _PriceMenuButton extends StatelessWidget {

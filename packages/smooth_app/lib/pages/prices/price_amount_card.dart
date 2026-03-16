@@ -25,6 +25,25 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
   late final TextEditingController _controllerPaid;
   late final TextEditingController _controllerWithoutDiscount;
 
+  static String _getDiscountTypeLabel(
+    final DiscountType type,
+    final AppLocalizations appLocalizations,
+  ) =>
+      switch (type) {
+        DiscountType.quantity => appLocalizations.prices_discount_type_quantity,
+        DiscountType.sale => appLocalizations.prices_discount_type_sale,
+        DiscountType.seasonal => appLocalizations.prices_discount_type_seasonal,
+        DiscountType.loyaltyProgram =>
+          appLocalizations.prices_discount_type_loyalty_program,
+        DiscountType.expiresSoon =>
+          appLocalizations.prices_discount_type_expires_soon,
+        DiscountType.pickItYourself =>
+          appLocalizations.prices_discount_type_pick_it_yourself,
+        DiscountType.secondHand =>
+          appLocalizations.prices_discount_type_second_hand,
+        DiscountType.other => appLocalizations.prices_discount_type_other,
+      };
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +119,34 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: SMALL_SPACE,
+              ),
+              child: SmoothDropdownButton<String>(
+                isExpanded: true,
+                value: model.discountType,
+                items: <SmoothDropdownItem<String>>[
+                  SmoothDropdownItem<String>(
+                    value: '',
+                    label: appLocalizations.prices_discount_type,
+                  ),
+                  ...DiscountType.values.map(
+                    (final DiscountType type) => SmoothDropdownItem<String>(
+                      value: type.offTag,
+                      label: _getDiscountTypeLabel(type, appLocalizations),
+                    ),
+                  ),
+                ],
+                onChanged: (final String? value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setState(() => model.discountType = value);
+                },
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

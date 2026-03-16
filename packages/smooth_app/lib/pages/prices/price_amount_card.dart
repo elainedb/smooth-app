@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/prices/discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_amount_model.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
@@ -100,6 +101,8 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo) const SizedBox(height: SMALL_SPACE),
+          if (model.promo) _DiscountTypeDropdown(model: model),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[
@@ -123,6 +126,55 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Dropdown for selecting a [DiscountType].
+class _DiscountTypeDropdown extends StatefulWidget {
+  const _DiscountTypeDropdown({required this.model});
+
+  final PriceAmountModel model;
+
+  @override
+  State<_DiscountTypeDropdown> createState() => _DiscountTypeDropdownState();
+}
+
+class _DiscountTypeDropdownState extends State<_DiscountTypeDropdown> {
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final String currentOffTag = widget.model.discountType;
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: SMALL_SPACE),
+      child: DropdownButtonFormField<String>(
+        initialValue: currentOffTag,
+        decoration: InputDecoration(
+          labelText: appLocalizations.prices_discount_type,
+        ),
+        items: <DropdownMenuItem<String>>[
+          DropdownMenuItem<String>(
+            value: '',
+            child: Text(
+              appLocalizations.prices_discount_type,
+              style: TextStyle(
+                color: Theme.of(context).disabledColor,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+          ...DiscountType.values.map(
+            (final DiscountType type) => DropdownMenuItem<String>(
+              value: type.offTag,
+              child: Text(type.getTitle(appLocalizations)),
+            ),
+          ),
+        ],
+        onChanged: (final String? value) {
+          setState(() => widget.model.discountType = value ?? '');
+        },
       ),
     );
   }

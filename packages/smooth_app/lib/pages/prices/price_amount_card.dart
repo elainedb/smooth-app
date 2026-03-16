@@ -6,6 +6,7 @@ import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/prices/price_amount_field.dart';
 import 'package:smooth_app/pages/prices/price_amount_model.dart';
+import 'package:smooth_app/pages/prices/price_discount_type_extension.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
 import 'package:smooth_app/pages/prices/price_per_extension.dart';
 import 'package:smooth_app/pages/prices/price_product_list_tile.dart';
@@ -100,6 +101,34 @@ class _PriceAmountCardState extends State<PriceAmountCard> {
             title: Text(appLocalizations.prices_amount_is_discounted),
             controlAffinity: ListTileControlAffinity.leading,
           ),
+          if (model.promo)
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: SMALL_SPACE,
+              ),
+              child: DropdownButtonFormField<DiscountType?>(
+                value: model.discountType,
+                decoration: InputDecoration(
+                  labelText: appLocalizations.prices_discount_type_label,
+                ),
+                isExpanded: true,
+                items: <DropdownMenuItem<DiscountType?>>[
+                  DropdownMenuItem<DiscountType?>(
+                    value: null,
+                    child: Text(appLocalizations.prices_discount_type_label),
+                  ),
+                  ...DiscountType.values.map(
+                    (final DiscountType type) =>
+                        DropdownMenuItem<DiscountType?>(
+                          value: type,
+                          child: Text(type.getTitle(appLocalizations)),
+                        ),
+                  ),
+                ],
+                onChanged: (final DiscountType? value) =>
+                    setState(() => model.discountType = value),
+              ),
+            ),
           const SizedBox(height: SMALL_SPACE),
           Row(
             children: <Widget>[

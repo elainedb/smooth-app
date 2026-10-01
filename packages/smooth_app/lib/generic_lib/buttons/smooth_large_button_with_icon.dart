@@ -31,7 +31,8 @@ class SmoothLargeButtonWithIcon extends StatelessWidget {
   final WidgetStateProperty<double?>? elevation;
 
   Color _getBackgroundColor(final ThemeData themeData) =>
-      backgroundColor ?? themeData.colorScheme.secondary;
+      (backgroundColor ?? themeData.colorScheme.secondary)
+          .withValues(alpha: onPressed == null ? 0.5 : 1.0);
 
   Color _getForegroundColor(final ThemeData themeData) =>
       foregroundColor ?? themeData.colorScheme.onSecondary;

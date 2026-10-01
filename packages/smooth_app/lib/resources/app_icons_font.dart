@@ -744,6 +744,11 @@ class _IconsFont {
     fontFamily: _kFontFam,
     fontPackage: _kFontPkg,
   );
+  static const IconData map = IconData(
+    0xe930,
+    fontFamily: _kFontFam,
+    fontPackage: _kFontPkg,
+  );
   static const IconData clock_alt = IconData(
     0xe893,
     fontFamily: _kFontFam,

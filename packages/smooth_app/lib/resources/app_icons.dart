@@ -1791,6 +1791,17 @@ class Location extends AppIcon {
   }) : super._(_IconsFont.location);
 }
 
+// ignore: avoid_classes_with_only_static_members
+class Map extends AppIcon {
+  const Map({
+    super.color,
+    super.size,
+    super.shadow,
+    super.semanticLabel,
+    super.key,
+  }) : super._(_IconsFont.map);
+}
+
 class Logo extends AppIcon {
   const Logo.openBeautyFacts({
     super.color,

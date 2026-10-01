@@ -114,11 +114,14 @@ class PriceModel with ChangeNotifier {
 
   void removeAt(final int index) {
     _hasChanged = true;
+    _priceAmountModels[index].dispose();
     _priceAmountModels.removeAt(index);
     notifyListeners();
   }
 
   PriceAmountModel elementAt(final int index) => _priceAmountModels[index];
+
+  List<PriceAmountModel> get priceAmountModels => _priceAmountModels;
 
   int get length => _priceAmountModels.length;
 
@@ -185,6 +188,14 @@ class PriceModel with ChangeNotifier {
   // overriding in order to make it public
   @override
   void notifyListeners() => super.notifyListeners();
+
+  @override
+  void dispose() {
+    for (final PriceAmountModel priceAmountModel in _priceAmountModels) {
+      priceAmountModel.dispose();
+    }
+    super.dispose();
+  }
 
   /// Returns the error message of the parameter check, or null if OK.
   String? checkParameters(final BuildContext context) {

@@ -13,25 +13,29 @@ class PriceCurrencySelector extends StatelessWidget {
 
   final CurrencySelectorHelper _helper = CurrencySelectorHelper();
 
+  static Future<void> openSelector({required BuildContext context}) async {
+    final PriceModel model = context.read<PriceModel>();
+    final CurrencySelectorHelper helper = CurrencySelectorHelper();
+    final Currency? currency = await helper.openCurrencySelector(
+      context: context,
+      selected: model.currency,
+    );
+    if (currency == null) {
+      return;
+    }
+    if (!context.mounted) {
+      return;
+    }
+    model.currency = currency;
+  }
+
   @override
   Widget build(BuildContext context) {
     final PriceModel model = context.watch<PriceModel>();
     return SmoothLargeButtonWithIcon(
       onPressed: model.proof != null
           ? null
-          : () async {
-              final Currency? currency = await _helper.openCurrencySelector(
-                context: context,
-                selected: model.currency,
-              );
-              if (currency == null) {
-                return;
-              }
-              if (!context.mounted) {
-                return;
-              }
-              model.currency = currency;
-            },
+          : () async => openSelector(context: context),
       text: model.currency.getFullName(),
       leadingIcon: Icon(_helper.currencyIconData),
       trailingIcon: const icons.Chevron.right(size: 10.0),

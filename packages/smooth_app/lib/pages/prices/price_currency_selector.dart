@@ -9,9 +9,25 @@ import 'package:smooth_app/resources/app_icons.dart' as icons;
 
 /// Button that displays the currency for price adding.
 class PriceCurrencySelector extends StatelessWidget {
-  PriceCurrencySelector();
+  const PriceCurrencySelector();
 
-  final CurrencySelectorHelper _helper = CurrencySelectorHelper();
+  static final CurrencySelectorHelper _helper = CurrencySelectorHelper();
+
+  /// Opens the currency selector and sets the currency on the model.
+  static Future<void> openSelector({required BuildContext context}) async {
+    final PriceModel model = context.read<PriceModel>();
+    final Currency? currency = await _helper.openCurrencySelector(
+      context: context,
+      selected: model.currency,
+    );
+    if (currency == null) {
+      return;
+    }
+    if (!context.mounted) {
+      return;
+    }
+    model.currency = currency;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,19 +35,7 @@ class PriceCurrencySelector extends StatelessWidget {
     return SmoothLargeButtonWithIcon(
       onPressed: model.proof != null
           ? null
-          : () async {
-              final Currency? currency = await _helper.openCurrencySelector(
-                context: context,
-                selected: model.currency,
-              );
-              if (currency == null) {
-                return;
-              }
-              if (!context.mounted) {
-                return;
-              }
-              model.currency = currency;
-            },
+          : () async => openSelector(context: context),
       text: model.currency.getFullName(),
       leadingIcon: Icon(_helper.currencyIconData),
       trailingIcon: const icons.Chevron.right(size: 10.0),

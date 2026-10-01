@@ -2,6 +2,9 @@ import 'package:openfoodfacts/openfoodfacts.dart';
 
 /// Currency symbols.
 extension CurrencyExtension on Currency {
+  /// Returns the currency symbol (e.g. "€" for EUR, "$" for USD).
+  String get symbol => _symbols[this] ?? name;
+
   String getFullName() {
     final String? symbol = _symbols[this];
     if (symbol == null) {

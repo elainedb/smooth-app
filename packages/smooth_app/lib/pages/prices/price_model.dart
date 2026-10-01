@@ -104,6 +104,8 @@ class PriceModel with ChangeNotifier {
 
   final List<PriceAmountModel> _priceAmountModels;
 
+  List<PriceAmountModel> get priceAmountModels => _priceAmountModels;
+
   final List<Price>? existingPrices;
 
   void add(final PriceAmountModel priceAmountModel) {
@@ -114,8 +116,17 @@ class PriceModel with ChangeNotifier {
 
   void removeAt(final int index) {
     _hasChanged = true;
+    _priceAmountModels[index].dispose();
     _priceAmountModels.removeAt(index);
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    for (final PriceAmountModel model in _priceAmountModels) {
+      model.dispose();
+    }
+    super.dispose();
   }
 
   PriceAmountModel elementAt(final int index) => _priceAmountModels[index];

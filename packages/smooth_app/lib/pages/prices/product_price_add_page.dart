@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:matomo_tracker/matomo_tracker.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
@@ -7,10 +9,10 @@ import 'package:smooth_app/generic_lib/widgets/smooth_back_button.dart';
 import 'package:smooth_app/helpers/provider_helper.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/locations/osm_location.dart';
+import 'package:smooth_app/pages/prices/add_product/price_add_product_button.dart';
+import 'package:smooth_app/pages/prices/add_product/price_add_product_card.dart';
 import 'package:smooth_app/pages/prices/price_add_helper.dart';
-import 'package:smooth_app/pages/prices/price_add_product_card.dart';
 import 'package:smooth_app/pages/prices/price_amount_card.dart';
-import 'package:smooth_app/pages/prices/price_currency_card.dart';
 import 'package:smooth_app/pages/prices/price_date_card.dart';
 import 'package:smooth_app/pages/prices/price_existing_amount_card.dart';
 import 'package:smooth_app/pages/prices/price_location_card.dart';
@@ -54,7 +56,7 @@ class ProductPriceAddPage extends StatefulWidget {
 
     final bool multipleProducts = product == null;
 
-    await Navigator.of(context).push(
+    await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute<void>(
         builder: (BuildContext context) => ProductPriceAddPage(
           PriceModel(
@@ -124,48 +126,89 @@ class _ProductPriceAddPageState extends State<ProductPriceAddPage>
                           .extension<SmoothColorsThemeExtension>()
                           .primaryLight
                     : null,
-                body: SingleChildScrollView(
+                body: CustomScrollView(
                   controller: _scrollController,
-                  padding: const EdgeInsetsDirectional.all(LARGE_SPACE),
-                  child: Column(
-                    children: <Widget>[
-                      const PriceProofCard(),
-                      const SizedBox(height: LARGE_SPACE),
-                      const PriceDateCard(),
-                      const SizedBox(height: LARGE_SPACE),
-                      PriceLocationCard(
-                        onLocationChanged: (OsmLocation location) =>
-                            PriceAddHelper(
-                              context,
-                            ).updateCurrency(location, model),
+                  slivers: <Widget>[
+                    SliverPadding(
+                      padding: const EdgeInsetsDirectional.all(LARGE_SPACE),
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
+                          children: <Widget>[
+                            const PriceProofCard(),
+                            const SizedBox(height: LARGE_SPACE),
+                            const PriceDateCard(),
+                            const SizedBox(height: LARGE_SPACE),
+                            PriceLocationCard(
+                              onLocationChanged: (OsmLocation location) =>
+                                  PriceAddHelper(
+                                    context,
+                                  ).updateCurrency(location, model),
+                            ),
+                            if (model.existingPrices != null) ...<Widget>[
+                              const SizedBox(height: LARGE_SPACE),
+                              for (final Price price in model.existingPrices!)
+                                PriceExistingAmountCard(price),
+                            ],
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: LARGE_SPACE),
-                      const PriceCurrencyCard(),
-                      const SizedBox(height: LARGE_SPACE),
-                      if (model.existingPrices != null)
-                        for (final Price price in model.existingPrices!)
-                          PriceExistingAmountCard(price),
-                      for (int i = 0; i < model.length; i++)
-                        PriceAmountCard(key: UniqueKey(), index: i),
-                      const SizedBox(height: LARGE_SPACE),
-                      if (model.multipleProducts) const PriceAddProductCard(),
-                      // so that the last items don't get hidden by the FAB
-                      const SizedBox(height: MINIMUM_TOUCH_SIZE * 2),
-                    ],
-                  ),
-                ),
-                floatingActionButton: SmoothExpandableFloatingActionButton(
-                  scrollController: _scrollController,
-                  onPressed: () async =>
-                      _exitPage(await _mayExitPage(saving: true, model: model)),
-                  icon: const Icon(Icons.send),
-                  label: Text(
-                    appLocalizations.prices_send_n_prices(model.length),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15.0,
                     ),
-                  ),
+                    if (model.length > 0)
+                      const SliverPadding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: LARGE_SPACE,
+                          end: LARGE_SPACE,
+                          bottom: LARGE_SPACE,
+                        ),
+                        sliver: PriceAmountCard(),
+                      ),
+                    if (model.multipleProducts && model.length == 0)
+                      const SliverPadding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: LARGE_SPACE,
+                          end: LARGE_SPACE,
+                          bottom: LARGE_SPACE,
+                        ),
+                        sliver: SliverToBoxAdapter(
+                          child: PriceAddProductCard(),
+                        ),
+                      ),
+                    const SliverPadding(
+                      padding: EdgeInsetsDirectional.only(
+                        bottom: MINIMUM_TOUCH_SIZE * 2,
+                      ),
+                    ),
+                  ],
+                ),
+                floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    if (model.multipleProducts && model.length > 0)
+                      const Align(
+                        alignment: Alignment.bottomCenter,
+                        child: PriceAddProductButton(),
+                      ),
+                    Align(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      child: SmoothExpandableFloatingActionButton(
+                        scrollController: _scrollController,
+                        onPressed: () async =>
+                            _exitPage(await _mayExitPage(saving: true, model: model)),
+                        icon: const icons.Send(size: 18.0),
+                        label: Padding(
+                          padding: const EdgeInsets.only(bottom: 2.0),
+                          child: Text(
+                            appLocalizations.prices_send_n_prices(model.length),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

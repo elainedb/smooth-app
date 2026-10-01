@@ -84,6 +84,20 @@ class UserPreferences extends ChangeNotifier {
       'lastVisitedOnboardingPage';
   static const String _TAG_PREFIX_FLAG = 'FLAG_PREFIX_';
   static const String _TAG_DEV_MODE = 'devMode';
+  static const String _TAG_USER_PRICES_MULTIPLE_SCANS_MODE =
+      'user_prices_multiple_scans_mode';
+
+  Future<void> setUserPricesMultipleScansMode(final bool value) async {
+    await _sharedPreferences.setBool(
+      _TAG_USER_PRICES_MULTIPLE_SCANS_MODE,
+      value,
+    );
+    notifyListeners();
+  }
+
+  bool get userPricesMultipleScansMode =>
+      _sharedPreferences.getBool(_TAG_USER_PRICES_MULTIPLE_SCANS_MODE) ?? false;
+
   static const String _TAG_USER_TRACKING = 'user_tracking';
   static const String _TAG_CRASH_REPORTS = 'crash_reports';
   static const String _TAG_PRICES_FEEDBACK_FORM = 'prices_feedback_form';

@@ -1675,6 +1675,8 @@ class Ingredients extends AppIcon {
   }) : super._(_IconsFont.ingredients_basket);
 }
 
+
+
 class Info extends AppIcon {
   const Info({
     super.color,

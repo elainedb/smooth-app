@@ -237,3 +237,59 @@ extension ProviderExtension on BuildContext {
     }
   }
 }
+
+/// Rebuilds when any of the given [ChangeNotifier]s change.
+class MultipleChangeNotifierBuilder<T extends ChangeNotifier>
+    extends StatefulWidget {
+  const MultipleChangeNotifierBuilder({
+    required this.notifiers,
+    required this.builder,
+    super.key,
+  });
+
+  final List<T> notifiers;
+  final Widget Function(BuildContext context, List<T> notifiers) builder;
+
+  @override
+  State<MultipleChangeNotifierBuilder<T>> createState() =>
+      _MultipleChangeNotifierBuilderState<T>();
+}
+
+class _MultipleChangeNotifierBuilderState<T extends ChangeNotifier>
+    extends State<MultipleChangeNotifierBuilder<T>> {
+  @override
+  void initState() {
+    super.initState();
+    for (final T notifier in widget.notifiers) {
+      notifier.replaceListener(_onNotifierChanged);
+    }
+  }
+
+  @override
+  void didUpdateWidget(MultipleChangeNotifierBuilder<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    for (final T notifier in oldWidget.notifiers) {
+      notifier.removeListener(_onNotifierChanged);
+    }
+    for (final T notifier in widget.notifiers) {
+      notifier.replaceListener(_onNotifierChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final T notifier in widget.notifiers) {
+      notifier.removeListener(_onNotifierChanged);
+    }
+    super.dispose();
+  }
+
+  void _onNotifierChanged() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, widget.notifiers);
+  }
+}

@@ -2602,6 +2602,11 @@
   },
   "prices_amount_existing_subtitle": "Price previously added",
   "prices_amount_subtitle": "Amount",
+  "prices_category_title": "Category",
+  "prices_origins_title": "Origins",
+  "prices_amount_update_currency": "Update currency",
+  "prices_location_open_map": "View the shop on the map",
+  "prices_location_edit": "Select another shop",
   "prices_amount_is_discounted": "Is discounted?",
   "prices_amount_price_normal": "Price",
   "prices_amount_price_discounted": "Discounted price",
@@ -5753,5 +5758,25 @@
         "type": "String"
       }
     }
+  },
+  "prices_category_title": "Category",
+  "@prices_category_title": {
+    "description": "Category title in price addition"
+  },
+  "prices_origins_title": "Origins",
+  "@prices_origins_title": {
+    "description": "Origins title in price addition"
+  },
+  "prices_amount_update_currency": "Update currency",
+  "@prices_amount_update_currency": {
+    "description": "Tooltip for updating the currency"
+  },
+  "prices_location_open_map": "View the shop on the map",
+  "@prices_location_open_map": {
+    "description": "Tooltip to view shop on map"
+  },
+  "prices_location_edit": "Select another shop",
+  "@prices_location_edit": {
+    "description": "Tooltip to edit shop location"
   }
 }

@@ -5099,6 +5099,36 @@ abstract class AppLocalizations {
   /// **'Amount'**
   String get prices_amount_subtitle;
 
+  /// Category title in price addition
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get prices_category_title;
+
+  /// Origins title in price addition
+  ///
+  /// In en, this message translates to:
+  /// **'Origins'**
+  String get prices_origins_title;
+
+  /// Tooltip for updating the currency
+  ///
+  /// In en, this message translates to:
+  /// **'Update currency'**
+  String get prices_amount_update_currency;
+
+  /// Tooltip to view shop on map
+  ///
+  /// In en, this message translates to:
+  /// **'View the shop on the map'**
+  String get prices_location_open_map;
+
+  /// Tooltip to edit shop location
+  ///
+  /// In en, this message translates to:
+  /// **'Select another shop'**
+  String get prices_location_edit;
+
   /// No description provided for @prices_amount_is_discounted.
   ///
   /// In en, this message translates to:

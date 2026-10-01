@@ -4,7 +4,7 @@ import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
 
 /// Model for the price of a single product.
-class PriceAmountModel {
+class PriceAmountModel extends ChangeNotifier {
   PriceAmountModel({required this.product});
 
   final PriceMetaProduct product;
@@ -18,8 +18,12 @@ class PriceAmountModel {
   String get paidPrice => _paidPrice;
 
   set paidPrice(final String value) {
+    if (_paidPrice == value) {
+      return;
+    }
     _hasChanged = true;
     _paidPrice = value;
+    notifyListeners();
   }
 
   String _priceWithoutDiscount = '';
@@ -27,8 +31,12 @@ class PriceAmountModel {
   String get priceWithoutDiscount => _priceWithoutDiscount;
 
   set priceWithoutDiscount(final String value) {
+    if (_priceWithoutDiscount == value) {
+      return;
+    }
     _hasChanged = true;
     _priceWithoutDiscount = value;
+    notifyListeners();
   }
 
   late double _checkedPaidPrice;
@@ -43,8 +51,12 @@ class PriceAmountModel {
   bool get promo => _promo;
 
   set promo(final bool value) {
+    if (_promo == value) {
+      return;
+    }
     _hasChanged = true;
     _promo = value;
+    notifyListeners();
   }
 
   DiscountType? _discountType;

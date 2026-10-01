@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/dialogs/smooth_alert_dialog.dart';
+import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/input/smooth_autocomplete_text_field.dart';
 import 'package:smooth_app/pages/prices/price_meta_product.dart';
 import 'package:smooth_app/pages/product/may_exit_page_helper.dart';
 import 'package:smooth_app/pages/product/simple_input/simple_input_page_helpers.dart';
 import 'package:smooth_app/query/product_query.dart';
+import 'package:smooth_app/resources/app_icons.dart' as icons;
+import 'package:smooth_app/widgets/smooth_app_bar.dart';
+import 'package:smooth_app/widgets/smooth_expandable_floating_action_button.dart';
 import 'package:smooth_app/widgets/smooth_scaffold.dart';
 import 'package:smooth_app/widgets/will_pop_scope.dart';
 
-const EdgeInsets _fieldPadding = EdgeInsets.symmetric(
+const EdgeInsetsDirectional _fieldPadding = EdgeInsetsDirectional.symmetric(
   horizontal: LARGE_SPACE,
   vertical: MEDIUM_SPACE,
 );
@@ -28,6 +32,7 @@ class PriceCategoryInputPage extends StatefulWidget {
 class _PriceCategoryInputPageState extends State<PriceCategoryInputPage> {
   late final TextEditingController _categoryController;
   late final TextEditingController _originController;
+  late final ScrollController _scrollController;
 
   String? _categoryName;
   final List<String> _originNames = <String>[];
@@ -41,19 +46,11 @@ class _PriceCategoryInputPageState extends State<PriceCategoryInputPage> {
     _changes = () {
       _hasChanged = true;
     };
+    _scrollController = ScrollController();
     _categoryController = TextEditingController();
     _categoryController.addListener(_changes);
     _originController = TextEditingController();
     _originController.addListener(_changes);
-  }
-
-  @override
-  void dispose() {
-    _categoryController.removeListener(_changes);
-    _categoryController.dispose();
-    _originController.removeListener(_changes);
-    _originController.dispose();
-    super.dispose();
   }
 
   @override
@@ -63,42 +60,60 @@ class _PriceCategoryInputPageState extends State<PriceCategoryInputPage> {
       onWillPop: () async => _mayExitPage(saving: false),
       child: SmoothScaffold(
         fixKeyboard: true,
-        appBar: AppBar(title: Text(appLocalizations.prices_category_enter)),
-        body: Padding(
+        appBar: SmoothAppBar(title: Text(appLocalizations.prices_category_enter)),
+        body: ListView(
+          controller: _scrollController,
           padding: const EdgeInsets.all(SMALL_SPACE),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: SMALL_SPACE,
-            children: <Widget>[
-              Text(appLocalizations.prices_category_mandatory),
-              if (_categoryName == null)
-                _MyAutocomplete(
-                  helper: SimpleInputPageCategoryHelper(),
-                  controller: _categoryController,
-                  onSelected: (final String selected) =>
-                      setState(() => _categoryName = selected),
-                )
-              else
-                _ReadOnlyTextField(_categoryName!),
-              const Divider(),
-              Text(appLocalizations.prices_category_optional),
-              for (final String name in _originNames) _ReadOnlyTextField(name),
-              _MyAutocomplete(
-                helper: SimpleInputPageOriginHelper(),
-                controller: _originController,
-                onSelected: (final String selected) => setState(() {
-                  _originController.text = '';
-                  _originNames.add(selected);
-                }),
+          children: <Widget>[
+            _PriceCategoryInputContainer(
+              title: appLocalizations.prices_category_title,
+              icon: const icons.Ingredients(),
+              helperText: appLocalizations.prices_category_mandatory,
+              child: _categoryName == null
+                  ? _MyAutocomplete(
+                      helper: SimpleInputPageCategoryHelper(),
+                      controller: _categoryController,
+                      onSelected: (final String selected) =>
+                          setState(() => _categoryName = selected),
+                    )
+                  : _ReadOnlyTextField(_categoryName!),
+            ),
+            const SizedBox(height: LARGE_SPACE),
+            _PriceCategoryInputContainer(
+              title: appLocalizations.prices_origins_title,
+              icon: const icons.Origins(),
+              helperText: appLocalizations.prices_category_optional,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  for (final String name in _originNames) ...<Widget>[
+                    _ReadOnlyTextField(name),
+                    const SizedBox(height: SMALL_SPACE),
+                  ],
+                  _MyAutocomplete(
+                    helper: SimpleInputPageOriginHelper(),
+                    controller: _originController,
+                    onSelected: (final String selected) => setState(() {
+                      _originController.text = '';
+                      _originNames.add(selected);
+                    }),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            // padding for FAB
+            const SizedBox(height: MINIMUM_TOUCH_SIZE * 2),
+          ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          label: Text(appLocalizations.prices_add_an_item),
-          icon: const Icon(Icons.add),
+        floatingActionButton: SmoothExpandableFloatingActionButton(
+          scrollController: _scrollController,
+          label: Text(
+            appLocalizations.prices_add_an_item,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          icon: const icons.Add(),
           onPressed: _categoryName == null
-              ? null
+              ? () {}
               : () async {
                   final (bool, PriceMetaProduct?) result = await _mayExitPage(
                     saving: true,
@@ -112,6 +127,16 @@ class _PriceCategoryInputPageState extends State<PriceCategoryInputPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _categoryController.removeListener(_changes);
+    _categoryController.dispose();
+    _originController.removeListener(_changes);
+    _originController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   /// Returns `true` if we should really exit the page.
@@ -166,6 +191,42 @@ class _PriceCategoryInputPageState extends State<PriceCategoryInputPage> {
         categoryName: _categoryName!,
         originNames: _originNames,
         language: ProductQuery.getLanguage(),
+      ),
+    );
+  }
+}
+
+class _PriceCategoryInputContainer extends StatelessWidget {
+  const _PriceCategoryInputContainer({
+    required this.title,
+    required this.icon,
+    required this.helperText,
+    required this.child,
+  });
+
+  final String title;
+  final Widget icon;
+  final String helperText;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SmoothCardWithRoundedHeader(
+      title: title,
+      leading: icon,
+      contentPadding: const EdgeInsetsDirectional.all(LARGE_SPACE),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsetsDirectional.only(bottom: SMALL_SPACE),
+            child: Text(
+              helperText,
+              style: const TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+          child,
+        ],
       ),
     );
   }

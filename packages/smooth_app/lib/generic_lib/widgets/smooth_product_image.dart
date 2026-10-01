@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_app/cards/product_cards/smooth_product_image.dart';
 import 'package:smooth_app/database/local_database.dart';
 import 'package:smooth_app/database/transient_file.dart';
-import 'package:smooth_app/generic_lib/widgets/images/smooth_image.dart';
+import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/query/product_query.dart';
 
 /// Main product image on a product card.
@@ -22,11 +23,12 @@ class SmoothMainProductImage extends StatelessWidget {
   Widget build(BuildContext context) {
     context.watch<LocalDatabase>();
     final OpenFoodFactsLanguage language = ProductQuery.getLanguage();
-    ImageProvider? imageProvider = TransientFile.fromProduct(
+    final TransientFile transientFile = TransientFile.fromProduct(
       product,
       ImageField.FRONT,
       language,
-    ).getImageProvider();
+    );
+    ImageProvider? imageProvider = transientFile.getImageProvider();
     // if we couldn't find an image for that specific language, use the default.
     if (imageProvider == null) {
       final String? url = product.imageFrontUrl;
@@ -35,10 +37,14 @@ class SmoothMainProductImage extends StatelessWidget {
       }
     }
 
-    return SmoothImage(
-      width: width,
-      height: height,
+    if (imageProvider == null) {
+      return EMPTY_WIDGET;
+    }
+
+    return ProductPicture.fromImageProvider(
       imageProvider: imageProvider,
+      size: Size(width, height),
+      borderRadius: ROUNDED_BORDER_RADIUS,
     );
   }
 }

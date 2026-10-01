@@ -2403,6 +2403,8 @@
   },
   "prices_barcode_enter": "Enter the Barcode",
   "prices_category_enter": "Item without barcode",
+  "prices_category_title": "Category",
+  "prices_origins_title": "Origins",
   "prices_per_kilogram": "Price per kilogram",
   "@prices_per_kilogram": {
     "description": "Title for PricePer.kilogram"
@@ -2602,6 +2604,7 @@
   },
   "prices_amount_existing_subtitle": "Price previously added",
   "prices_amount_subtitle": "Amount",
+  "prices_amount_update_currency": "Update currency",
   "prices_amount_is_discounted": "Is discounted?",
   "prices_amount_price_normal": "Price",
   "prices_amount_price_discounted": "Discounted price",
@@ -2613,6 +2616,8 @@
   "prices_date_subtitle": "Date",
   "prices_location_subtitle": "Shop",
   "prices_location_find": "Find a shop",
+  "prices_location_open_map": "View the shop on the map",
+  "prices_location_edit": "Select another shop",
   "prices_location_mandatory": "You need to select a shop!",
   "prices_location_search_broader": "Couldn't find what you were looking for? Let's try a broader search!",
   "prices_proof_subtitle": "Proof",

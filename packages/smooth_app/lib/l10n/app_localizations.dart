@@ -4842,6 +4842,18 @@ abstract class AppLocalizations {
   /// **'Item without barcode'**
   String get prices_category_enter;
 
+  /// No description provided for @prices_category_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get prices_category_title;
+
+  /// No description provided for @prices_origins_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Origins'**
+  String get prices_origins_title;
+
   /// Title for PricePer.kilogram
   ///
   /// In en, this message translates to:
@@ -5099,6 +5111,12 @@ abstract class AppLocalizations {
   /// **'Amount'**
   String get prices_amount_subtitle;
 
+  /// No description provided for @prices_amount_update_currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Update currency'**
+  String get prices_amount_update_currency;
+
   /// No description provided for @prices_amount_is_discounted.
   ///
   /// In en, this message translates to:
@@ -5164,6 +5182,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Find a shop'**
   String get prices_location_find;
+
+  /// No description provided for @prices_location_open_map.
+  ///
+  /// In en, this message translates to:
+  /// **'View the shop on the map'**
+  String get prices_location_open_map;
+
+  /// No description provided for @prices_location_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Select another shop'**
+  String get prices_location_edit;
 
   /// No description provided for @prices_location_mandatory.
   ///

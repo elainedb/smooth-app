@@ -3,16 +3,18 @@ import 'package:openfoodfacts/openfoodfacts.dart';
 /// Currency symbols.
 extension CurrencyExtension on Currency {
   String getFullName() {
-    final String? symbol = _symbols[this];
-    if (symbol == null) {
+    final String? s = _symbols[this];
+    if (s == null) {
       return name;
     }
     // e.g. for CHF
-    if (symbol == name) {
+    if (s == name) {
       return name;
     }
-    return '$name ($symbol)';
+    return '$name ($s)';
   }
+
+  String get symbol => _symbols[this] ?? name;
 
   // source: https://www.xe.com/symbols/
   static final Map<Currency, String> _symbols = <Currency, String>{

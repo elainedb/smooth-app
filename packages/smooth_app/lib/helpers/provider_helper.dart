@@ -209,6 +209,66 @@ class _ConsumerValueNotifierFilterState<T extends ValueNotifier<S>, S>
   }
 }
 
+/// Listens to multiple [ChangeNotifier] instances and rebuilds when any change.
+class MultipleChangeNotifierBuilder<T extends ChangeNotifier>
+    extends StatefulWidget {
+  const MultipleChangeNotifierBuilder({
+    required this.notifiers,
+    required this.builder,
+    super.key,
+  });
+
+  final List<T> notifiers;
+  final Widget Function(BuildContext context, List<T> notifiers) builder;
+
+  @override
+  State<MultipleChangeNotifierBuilder<T>> createState() =>
+      _MultipleChangeNotifierBuilderState<T>();
+}
+
+class _MultipleChangeNotifierBuilderState<T extends ChangeNotifier>
+    extends State<MultipleChangeNotifierBuilder<T>> {
+  List<T> _notifiers = <T>[];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateNotifiers(widget.notifiers);
+  }
+
+  @override
+  void didUpdateWidget(MultipleChangeNotifierBuilder<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateNotifiers(widget.notifiers);
+  }
+
+  void _updateNotifiers(List<T> newNotifiers) {
+    for (final T notifier in _notifiers) {
+      notifier.removeListener(_onNotifierChanged);
+    }
+    _notifiers = newNotifiers;
+    for (final T notifier in _notifiers) {
+      notifier.replaceListener(_onNotifierChanged);
+    }
+  }
+
+  void _onNotifierChanged() {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    for (final T notifier in _notifiers) {
+      notifier.removeListener(_onNotifierChanged);
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      widget.builder(context, widget.notifiers);
+}
+
 extension ChangeNotifierExtensions on ChangeNotifier {
   void replaceListener(VoidCallback listener) {
     removeListener(listener);

@@ -1855,6 +1855,16 @@ class MagicWand extends AppIcon {
   }) : super._(_IconsFont.magic_wand);
 }
 
+class MapIcon extends AppIcon {
+  const MapIcon({
+    super.color,
+    super.size,
+    super.shadow,
+    super.semanticLabel,
+    super.key,
+  }) : super._(_IconsFont.map);
+}
+
 class Megaphone extends AppIcon {
   const Megaphone({
     super.color,

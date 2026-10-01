@@ -9,7 +9,7 @@ import 'package:smooth_app/l10n/app_localizations.dart';
 import 'package:smooth_app/pages/locations/osm_location.dart';
 import 'package:smooth_app/pages/prices/price_add_helper.dart';
 import 'package:smooth_app/pages/prices/price_bulk_proof_card.dart';
-import 'package:smooth_app/pages/prices/price_currency_card.dart';
+import 'package:smooth_app/pages/prices/price_currency_selector.dart';
 import 'package:smooth_app/pages/prices/price_date_card.dart';
 import 'package:smooth_app/pages/prices/price_location_card.dart';
 import 'package:smooth_app/pages/prices/price_model.dart';
@@ -112,7 +112,7 @@ class _ProofBulkAddPageState extends State<ProofBulkAddPage>
                         PriceAddHelper(context).updateCurrency(location, model),
                   ),
                   const SizedBox(height: LARGE_SPACE),
-                  const PriceCurrencyCard(),
+                  PriceCurrencySelector(),
                   const SizedBox(height: LARGE_SPACE),
                   PriceBulkProofCard(_formKey),
                 ],

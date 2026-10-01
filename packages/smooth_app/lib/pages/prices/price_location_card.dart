@@ -7,6 +7,7 @@ import 'package:smooth_app/generic_lib/design_constants.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_back_button.dart';
 import 'package:smooth_app/generic_lib/widgets/smooth_card.dart';
 import 'package:smooth_app/l10n/app_localizations.dart';
+import 'package:smooth_app/pages/locations/location_map_page.dart';
 import 'package:smooth_app/pages/locations/osm_location.dart';
 import 'package:smooth_app/pages/locations/search_location_helper.dart';
 import 'package:smooth_app/pages/locations/search_location_preloaded_item.dart';
@@ -29,59 +30,150 @@ class PriceLocationCard extends StatelessWidget {
     return SmoothCardWithRoundedHeader(
       title: appLocalizations.prices_location_subtitle,
       leading: const icons.Shopping.cart(),
+      titlePadding: location != null
+          ? const EdgeInsetsDirectional.only(
+              top: 2.0,
+              start: LARGE_SPACE,
+              end: SMALL_SPACE,
+              bottom: 2.0,
+            )
+          : null,
+      trailing: location != null
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SmoothCardHeaderButton(
+                  circled: true,
+                  tooltip: appLocalizations.prices_location_open_map,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          LocationMapPage(location, popFirst: false),
+                    ),
+                  ),
+                  child: const icons.Map(size: 12.0),
+                ),
+                if (model.cropParameters != null)
+                  SmoothCardHeaderButton(
+                    circled: true,
+                    tooltip: appLocalizations.prices_location_edit,
+                    onTap: () => _onTap(context),
+                    child: const icons.Edit(size: 12.0),
+                  ),
+              ],
+            )
+          : null,
       contentPadding: const EdgeInsetsDirectional.symmetric(
         horizontal: SMALL_SPACE,
         vertical: MEDIUM_SPACE,
       ),
-      child: SmoothLargeButtonWithIcon(
-        text: location == null
-            ? appLocalizations.prices_location_find
-            : location.getTitle() ??
-                  location.getSubtitle() ??
-                  location.getLatLng().toString(),
-        leadingIcon: const icons.Location(),
-        trailingIcon: const icons.Chevron.right(size: 10.0),
-        onPressed: model.proof != null
-            ? null
-            : () async {
-                final LocalDatabase localDatabase = context
-                    .read<LocalDatabase>();
-                final List<SearchLocationPreloadedItem> preloadedList =
-                    <SearchLocationPreloadedItem>[];
-                final List<OsmLocation> locations = await DaoOsmLocation(
-                  localDatabase,
-                ).getAll();
-                if (!context.mounted) {
-                  return;
-                }
-                for (final OsmLocation osmLocation in locations) {
-                  preloadedList.add(
-                    SearchLocationPreloadedItem(osmLocation, popFirst: false),
-                  );
-                }
-                final OsmLocation? osmLocation =
-                    await Navigator.push<OsmLocation>(
-                      context,
-                      MaterialPageRoute<OsmLocation>(
-                        builder: (BuildContext context) => SearchPage(
-                          SearchLocationHelper(),
-                          preloadedList: preloadedList,
-                          autofocus: false,
-                          backButtonType: BackButtonType.close,
-                        ),
-                      ),
-                    );
-                if (osmLocation == null) {
-                  return;
-                }
-                final DaoOsmLocation daoOsmLocation = DaoOsmLocation(
-                  localDatabase,
-                );
-                await daoOsmLocation.put(osmLocation);
+      child: location != null
+          ? _PriceLocationCardDetails(location: location)
+          : _PriceLocationCardEmptyLocation(
+              onTap: model.proof != null ? null : () => _onTap(context),
+            ),
+    );
+  }
 
-                onLocationChanged.call(osmLocation);
-              },
+  void _onTap(BuildContext context) async {
+    final LocalDatabase localDatabase = context.read<LocalDatabase>();
+    final List<SearchLocationPreloadedItem> preloadedList =
+        <SearchLocationPreloadedItem>[];
+    final List<OsmLocation> locations = await DaoOsmLocation(
+      localDatabase,
+    ).getAll();
+    if (!context.mounted) {
+      return;
+    }
+    for (final OsmLocation osmLocation in locations) {
+      preloadedList.add(
+        SearchLocationPreloadedItem(osmLocation, popFirst: false),
+      );
+    }
+    final OsmLocation? osmLocation = await Navigator.push<OsmLocation>(
+      context,
+      MaterialPageRoute<OsmLocation>(
+        builder: (BuildContext context) => SearchPage(
+          SearchLocationHelper(),
+          preloadedList: preloadedList,
+          autofocus: false,
+          backButtonType: BackButtonType.close,
+        ),
       ),
+    );
+    if (osmLocation == null) {
+      return;
+    }
+    final DaoOsmLocation daoOsmLocation = DaoOsmLocation(localDatabase);
+    await daoOsmLocation.put(osmLocation);
+
+    onLocationChanged.call(osmLocation);
+  }
+}
+
+class _PriceLocationCardDetails extends StatelessWidget {
+  const _PriceLocationCardDetails({required this.location});
+
+  final OsmLocation location;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                if (location.name != null)
+                  TextSpan(
+                    text: '${location.name}\n',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                if (location.street != null)
+                  TextSpan(text: '${location.street}\n'),
+                if (location.postcode != null || location.city != null)
+                  TextSpan(
+                    text:
+                        '${<String?>[location.postcode, location.city].where((String? s) => s != null).join(' ')}\n',
+                  ),
+                if (location.country != null) TextSpan(text: location.country!),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsetsDirectional.all(SMALL_SPACE),
+          decoration: BoxDecoration(
+            color: colorScheme.secondary,
+            shape: BoxShape.circle,
+          ),
+          child: const icons.Shop(color: Colors.white, size: 20.0),
+        ),
+      ],
+    );
+  }
+}
+
+class _PriceLocationCardEmptyLocation extends StatelessWidget {
+  const _PriceLocationCardEmptyLocation({required this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+
+    return SmoothLargeButtonWithIcon(
+      text: appLocalizations.prices_location_find,
+      leadingIcon: const icons.Location(),
+      trailingIcon: const icons.Chevron.right(size: 10.0),
+      onPressed: onTap,
     );
   }
 }
